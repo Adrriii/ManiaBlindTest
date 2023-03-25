@@ -1,0 +1,16 @@
+.game_container {
+	display: flex;
+	align-items: stretch;
+	
+	justify-content: center;
+	flex-grow: 100;
+}
+
+.game {
+	flex-grow: 100;
+	max-width: 900px;
+	background: rgba(255,255,255,.15);
+	border-radius: 1%;
+	margin: 2em;
+	padding: 1%;
+}

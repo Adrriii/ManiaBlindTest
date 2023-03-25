@@ -1,0 +1,20 @@
+@import 'fonts';
+
+html,
+body,
+#__next {
+	height: 100%;
+}
+
+body {
+	margin: 0;
+
+	background: radial-gradient(circle,
+		rgba(60,0,151,1) 0%,
+		rgba(29,0,72,1) 100%
+	);
+
+	font-family: 'VT323-Regular';
+	color: white;
+	font-size: 1.7em;
+}
