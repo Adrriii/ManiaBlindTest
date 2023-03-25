@@ -101,25 +101,25 @@ export default function Hint() {
 					</div>
 				</div>
 				<div className={styles.hint_info_container}>
-					<div className={addClass(styles.hint_mappers)}>
-						<div className={styles.hint_label}>Mapped by :</div>
-						<div className={styles.hint_info}>{gameInfo.hints?.mappers.join(', ')}</div>
-					</div>
 					<div className={addClass(styles.hint_ranked_dates)}>
 						<div className={styles.hint_label}>Ranked date :</div>
-						<div className={styles.hint_info}>{gameInfo.hints?.rank_dates.join(', ')}</div>
+						<div className={styles.hint_info}>{gameInfo.hints?.rank_dates.length > 0 ? gameInfo.hints?.rank_dates.join(', ') : '???'}</div>
+					</div>
+					<div className={addClass(styles.hint_mappers)}>
+						<div className={styles.hint_label}>Mapped by :</div>
+						<div className={styles.hint_info}>{gameInfo.hints?.mappers.length > 0 ? gameInfo.hints?.mappers.join(', ') : '???'}</div>
 					</div>
 					<div className={addClass(styles.hint_diffs)}>
 						<div className={styles.hint_label}>Versions :</div>
-						<div className={styles.hint_info}>{gameInfo.hints?.mapsets_diffs.reduce((list, map) => list.concat(map), []).join(', ')}</div>
+						<div className={styles.hint_info}>{gameInfo.hints?.mapsets_diffs.length > 0 ? gameInfo.hints?.mapsets_diffs.reduce((list, map) => list.concat(map), []).join(', ') : '???'}</div>
 					</div>
 					<div className={addClass(styles.hint_artist)}>
 						<div className={styles.hint_label}>Artist :</div>
-						<div className={styles.hint_info}>{gameInfo.hints?.artist}</div>
+						<div className={styles.hint_info}>{gameInfo.hints?.artist ? gameInfo.hints?.artist : '???'}</div>
 					</div>
 					<div className={addClass(styles.hint_title)}>
 						<div className={styles.hint_label}>Title :</div>
-						<div className={styles.hint_info}>{gameInfo.hints?.title}</div>
+						<div className={styles.hint_info}>{gameInfo.hints?.title ? gameInfo.hints?.title : '???'}</div>
 					</div>
 				</div>
 			</div>
