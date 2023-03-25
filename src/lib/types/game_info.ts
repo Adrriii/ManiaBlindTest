@@ -1,12 +1,12 @@
 import { Hints } from "./hints";
-import { SongInfo } from "./song_info"
 
 export type GameId = string;
 
 export type GameInfo = {
 	id: GameId,
-	song_info: SongInfo,
-	hints: Hints
+	song_uri: string,
+	hints: Hints,
+	over: boolean
 }
 
 export function getEmptyGameInfo(): GameInfo {
@@ -20,8 +20,7 @@ export function getEmptyGameInfo(): GameInfo {
 			mapsets_diffs: [],
 			title: '',
 		},
-		song_info: {
-			uri: '',
-		}
+		song_uri: '',
+		over: false
 	};
 }

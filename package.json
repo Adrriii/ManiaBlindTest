@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+	"launch": "next build && next start",
     "lint": "next lint"
   },
   "dependencies": {
@@ -13,14 +14,17 @@
     "@types/react": "18.0.28",
     "@types/react-dom": "18.0.11",
     "@typescript-eslint/eslint-plugin": "^5.56.0",
-	"@typescript-eslint/parser": "^5.0.0",
+    "@typescript-eslint/parser": "^5.0.0",
+    "classnames": "^2.3.2",
     "eslint": "8.36.0",
     "eslint-config-next": "13.2.4",
     "fs": "^0.0.1-security",
+    "net": "^1.0.2",
     "next": "13.2.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "serverless-mysql": "^1.5.4",
+    "tls": "^0.0.1",
     "typescript": "5.0.2"
   }
 }

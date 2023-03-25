@@ -9,6 +9,8 @@ export class Games {
 	games: Map<GameId, GameInfo>;
 
 	constructor() {
+		const opt: fs.RmOptions = { recursive: true, force: true };
+		fs.rm(`${process.env.SONG_DIR}/games`, opt, () => { return; });
 		this.games = new Map();
 	}
 
@@ -28,11 +30,16 @@ export class Games {
 
 		await songs.initGameSong(game, song);
 		
-		game.song_info.uri = `${process.env.SONG_URI}/${game.id}/${game.id}.mp3`;
+		game.song_uri = `${process.env.SONG_URI}/games/${game.id}/${game.id}.mp3`;
 
 		this.games.set(game.id, game);
 
 		return game;
+	}
+
+	gameOver(game: GameInfo): void {
+		game.over = true;
+		this.games.delete(game.id);
 	}
 
 	private tryHash(hash: string): boolean {
@@ -49,7 +56,7 @@ export class Games {
 	private randomGameId(): GameId {
 		let id;
 		do {
-			id = Crypto.randomBytes(21).toString('base64').slice(0, 21);
+			id = Crypto.randomBytes(21).toString('hex').slice(0, 21);
 		} while(this.games.has(id));
 
 		return id;

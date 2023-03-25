@@ -1,17 +1,18 @@
 import styles from '@/styles/modules/play_random.module.css'
 import { useContext, useEffect, useState } from 'react';
-import { GameContext } from '../contexts/game_context';
-import { GameInfo, getEmptyGameInfo } from '../types/game_info';
+import { GameContext } from '../../lib/contexts/game_context';
+import { GameInfo, getEmptyGameInfo } from '../../lib/types/game_info';
 
 export default function PlayRandom() {
 	const {gameInfo, setGameInfo} = useContext(GameContext);
 	const [volume, setVolume] = useState(0.5);
 	const [isPlaying, setIsPlaying] = useState(false);
 	const [isPaused, setIsPaused] = useState(false);
+	const [givingUp, setGiveUp] = useState(false);
 
 	useEffect(() => {
-		if(gameInfo.id) {
-			getPlayer().src = gameInfo.song_info.uri;
+		if(gameInfo.id && getPlayer().src !== gameInfo.song_uri) {
+			getPlayer().src = gameInfo.song_uri;
 			getPlayer().play();
 			setIsPlaying(true);
 			setIsPaused(false);
@@ -43,12 +44,30 @@ export default function PlayRandom() {
 	function handleEnded() {
 		getPlayer().src = '';
 		setIsPlaying(false);
-		setGameInfo(getEmptyGameInfo());
 	}
 
-	function giveUp() {
-		getPlayer().pause();
-		handleEnded();
+	useEffect(() => {
+		fetch(`/api/next_hint/${gameInfo.id}`).then((data: Response) => {
+			data.json().then((game: any) => {
+				if(game.error) {
+					return;
+				}
+				setGameInfo(game as GameInfo);
+
+				if(!game.over) {
+					setGiveUp(!givingUp);
+				}
+			});
+		});
+	}, [givingUp]);
+
+	async function giveUp() {
+		setGiveUp(!givingUp);
+	}
+
+	function next() {
+		pause();
+		playRandom();
 	}
 
 	function handleVolumeChange(volume: number) {
@@ -62,7 +81,8 @@ export default function PlayRandom() {
 			{ !isPlaying && <button onClick={playRandom}>Play</button>}
 			{ !isPaused && isPlaying && <button onClick={pause}>Pause</button>}
 			{ isPaused && isPlaying && <button onClick={resume}>Resume</button>}
-			{ isPlaying && <button onClick={giveUp}>Give Up</button>}
+			{ isPlaying && gameInfo.over && <button onClick={next}>Next !</button>}
+			{ isPlaying && !gameInfo.over && <button onClick={giveUp}>Give Up</button>}
 			
 			<input
 				type="range"

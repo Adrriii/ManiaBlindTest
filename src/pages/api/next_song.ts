@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { GameInfo } from '../types/game_info';
-import games from '../memory/games';
+import { GameInfo } from '../../lib/types/game_info';
+import games from '../../lib/memory/games';
 
 export default async function handler(
 	req: NextApiRequest,

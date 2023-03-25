@@ -1,7 +1,7 @@
 import styles from '@/styles/modules/game.module.css';
 import { useState } from 'react';
-import { GameContext } from '../contexts/game_context';
-import { GameInfo, getEmptyGameInfo } from '../types/game_info';
+import { GameContext } from '../../lib/contexts/game_context';
+import { GameInfo, getEmptyGameInfo } from '../../lib/types/game_info';
 
 import Hint from './hint';
 import PlayRandom from './play_random';
