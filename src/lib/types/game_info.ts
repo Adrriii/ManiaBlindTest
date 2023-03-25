@@ -5,6 +5,7 @@ export type GameId = string;
 export type GameInfo = {
 	id: GameId,
 	song_uri: string,
+	song_length: number,
 	hints: Hints,
 	over: boolean
 }
@@ -21,6 +22,7 @@ export function getEmptyGameInfo(): GameInfo {
 			title: '',
 		},
 		song_uri: '',
+		song_length: 0,
 		over: false
 	};
 }

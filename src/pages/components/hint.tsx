@@ -1,14 +1,71 @@
 import styles from '@/styles/modules/hint.module.css'
-import { useContext } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { GameContext } from '../../lib/contexts/game_context';
 import { GameInfo } from '../../lib/types/game_info';
 
 export default function Hint() {
 	const {gameInfo, setGameInfo} = useContext(GameContext);
+	const [currentTime, setCurrentTime] = useState<number>(0);
+	const [duration, setDuration] = useState<number>(0);
+	const [progressRefresher, setProgressRefresher] = useState<NodeJS.Timer | null>(null);
+	const prevRefresher = useRef({progressRefresher}).current;
 
 	const unknown_banner = '/unknown.png';
 
+	function getPlayer(): HTMLAudioElement {
+		return document.getElementById('player') as HTMLAudioElement;
+	}
+
+	function getProgressBar(): HTMLDivElement {
+		return document.getElementById('progress_bar') as HTMLDivElement;
+	}
+
+	function displaySeconds(secs: number): string {
+		const minutes = Math.floor(secs / 60);
+		const seconds = secs % 60;
+
+		let min = minutes.toString();
+		let sec = seconds.toString();
+		if(min.length === 1) min = '0' + min;
+		if(sec.length === 1) sec = '0' + sec;
+
+		return `${min}:${sec}`;
+	}
+
+	// Update song progress bar
+	useEffect(() => {
+		if(!gameInfo.song_length) return;
+		setProgressRefresher(
+			setInterval(() => {
+				if(!document) return;
+		
+				const player = getPlayer();
+				const bar = getProgressBar();
+				const total_length = player.duration;
+				
+				setDuration(total_length);
+				
+				if(!player || !bar) return;
+				if(!player.currentTime) bar.style.width = "0%";
+				if(player.currentTime) bar.style.width = `${player.currentTime / total_length * 100}%`;
+				setCurrentTime(Math.floor(player.currentTime));
+			}, 150)
+		);
+	}, [gameInfo]);
+
+	useEffect(() => {
+		if(prevRefresher.progressRefresher) {
+			clearInterval(prevRefresher.progressRefresher);
+		}
+
+		return () => {
+			prevRefresher.progressRefresher = progressRefresher
+		}
+	}, [progressRefresher])
+
 	function nextHint(): void {
+		if(!gameInfo.id) return;
+
 		fetch(`/api/next_hint/${gameInfo.id}`).then((data: Response) => {
 			data.json().then((game: GameInfo) => {
 				setGameInfo(game);
@@ -35,6 +92,12 @@ export default function Hint() {
 							className={gameInfo.hints?.banner_url ? '' : styles.unknown}
 							src={gameInfo.hints?.banner_url ? gameInfo.hints.banner_url : unknown_banner}
 						/>
+					</div>
+					<div className={styles.progress_bar}>
+						<div className={styles.progress_bar_bg}></div>
+						<div id='progress_bar' className={styles.progress_bar_fill}></div>
+						<div className={styles.progress_bar_start}>{displaySeconds(currentTime)}</div>
+						<div className={styles.progress_bar_end}>{displaySeconds(gameInfo.song_length)}</div>
 					</div>
 				</div>
 				<div className={styles.hint_info_container}>

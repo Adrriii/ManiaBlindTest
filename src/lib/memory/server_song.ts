@@ -23,20 +23,27 @@ export class ServerSong {
 		const calls: Promise<unknown>[] = [];
 
 		calls.push(
-			(query(
-				'SELECT beatmapset_id FROM song WHERE hash_id = ?',
-				[this.song.hash_id],
-				'blindtest'
-			) as Promise<Pick<Song, 'beatmapset_id'>[]>)
-			.then((results) => {
-				results.forEach((result) => {
-					calls.push(mapsets.getMapset(result.beatmapset_id).then((mapset) => {
-						this.mapsets.set(mapset.beatmapset_id, mapset);
-					}))
+			new Promise<void>((resolve) => {
+				(query(
+					'SELECT beatmapset_id FROM song WHERE hash_id = ?',
+					[this.song.hash_id],
+					'blindtest'
+				) as Promise<Pick<Song, 'beatmapset_id'>[]>)
+				.then((results) => {
+					results.forEach((result) => {
+						mapsets.getMapset(result.beatmapset_id).then((mapset) => {
+							this.mapsets.set(mapset.beatmapset_id, mapset);
+							resolve();
+						});
+					});
 				})
 			})
 		);
 
 		return Promise.all(calls);
+	}
+
+	getSome(): Mapset {
+		return this.mapsets.get(this.mapsets.keys().next().value) as Mapset;
 	}
 }

@@ -15,10 +15,10 @@ export class Songs {
 		return this.songs.has(gameId) ? this.songs.get(gameId) as ServerSong : null;
 	}
 
-	initGameSong(gameInfo: GameInfo, song: Song): Promise<unknown> {
-		const calls: Promise<unknown>[] = [];
+	initGameSong(gameInfo: GameInfo, song: Song): Promise<(ServerSong | null)[]> {
+		const calls: Promise<ServerSong | null>[] = [];
 
-		calls.push(new Promise<void>((resolve) => {
+		calls.push(new Promise<ServerSong | null>((resolve) => {
 			(new ServerSong(song)).init().then((songReady) => {
 				this.songs.set(gameInfo.id, songReady);
 
@@ -26,11 +26,11 @@ export class Songs {
 				setTimeout(() => {
 					this.songs.delete(gameInfo.id);
 				}, 3600000)
-				resolve();
+				resolve(songReady);
 			})
 		}));
 		
-		calls.push(new Promise<void>((resolve) => {
+		calls.push(new Promise<ServerSong | null>((resolve) => {
 			const audio = `${process.env.SONG_DIR}/${song.hash_id}/${song.hash_id}.mp3`;
 			const dest = `${process.env.SONG_DIR}/games/${gameInfo.id}`;
 			const game_audio = `${dest}/${gameInfo.id}.mp3`;
@@ -48,7 +48,7 @@ export class Songs {
 				}
 			}, 3600000);
 			
-			resolve();
+			resolve(null);
 		}));
 
 		return Promise.all(calls);

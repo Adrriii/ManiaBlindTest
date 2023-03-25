@@ -4,6 +4,7 @@ import fs from 'fs';
 import { Song } from "../db/song";
 import { GameId, GameInfo, getEmptyGameInfo } from "../types/game_info";
 import songs from "./songs";
+import { ServerSong } from "./server_song";
 
 export class Games {
 	games: Map<GameId, GameInfo>;
@@ -28,9 +29,12 @@ export class Games {
 		
 		game.id = this.randomGameId();
 
-		await songs.initGameSong(game, song);
+		const serverSong = 
+			(await songs.initGameSong(game, song))
+			.filter((song) => song != null)[0] as ServerSong;
 		
 		game.song_uri = `${process.env.SONG_URI}/games/${game.id}/${game.id}.mp3`;
+		game.song_length = serverSong.getSome().total_length as number;
 
 		this.games.set(game.id, game);
 
