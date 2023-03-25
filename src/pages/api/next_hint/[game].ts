@@ -9,18 +9,13 @@ function setNextHint(current: GameInfo): GameInfo {
 	const answers = songs.getSong(current.id)?.mapsets as Map<number, Mapset>;
 	const answer = answers.get(answers.keys().next().value as number) as Mapset;
 
-	if(!current.hints.banner_url) {
-		current.hints.banner_url = HintCreator.getBannerUrl(answer);
+	if(current.hints.rank_dates.length === 0) {
+		current.hints.rank_dates = HintCreator.getRankDates(answers);
 		return current;
 	}
 
 	if(current.hints.mappers.length === 0) {
 		current.hints.mappers = HintCreator.getMappers(answers);
-		return current;
-	}
-
-	if(current.hints.rank_dates.length === 0) {
-		current.hints.rank_dates = HintCreator.getRankDates(answers);
 		return current;
 	}
 
@@ -31,6 +26,11 @@ function setNextHint(current: GameInfo): GameInfo {
 
 	if(!current.hints.artist) {
 		current.hints.artist = HintCreator.getArtist(answer);
+		return current;
+	}
+
+	if(!current.hints.banner_url) {
+		current.hints.banner_url = HintCreator.getBannerUrl(answer);
 		return current;
 	}
 
