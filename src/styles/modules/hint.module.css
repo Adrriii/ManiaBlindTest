@@ -22,6 +22,9 @@
 
 .hint_info_container {
 	padding: 15px;
+	background: rgba(255,255,255,.15);
+	border-bottom-right-radius: 20px;
+	border-bottom-left-radius: 20px;
 }
 
 .hint_div {
