@@ -9,14 +9,15 @@ export class Mapsets {
 		this.mapsets = new Map();
 	}
 
-	async getMapset(mapset_id: number): Promise<Mapset> {
+	async getMapset(mapset_id: number): Promise<Mapset | null> {
 		return this.mapsets.has(mapset_id) ?
 			this.mapsets.get(mapset_id) as Mapset :
 			await this.fetchMapset(mapset_id);
 	}
 
-	private async fetchMapset(mapset_id: number): Promise<Mapset> {
+	private async fetchMapset(mapset_id: number): Promise<Mapset | null> {
 		const beatmaps = (await query(`SELECT * FROM osu_allbeatmaps WHERE mode = 3 AND approved_date > "2005-01-01" AND beatmapset_id = ${mapset_id}`)) as Beatmap[];
+		if(beatmaps.length === 0) return null;
 		
 		const mapset = {
 			beatmapset_id: beatmaps[0].beatmapset_id,
