@@ -16,28 +16,28 @@ export default function Filters() {
 		{ value: 'lowest', label: 'Diff Min'}
 	];
 	for(let d = 1; d <= 10; d++) {
-		optionsDiffMin.push({ value: `${d}`, label: `${d}*` });
+		optionsDiffMin.push({ value: `${d}`, label: `min. ${d}*` });
 	}
 
 	const optionsDiffMax = [
 		{ value: 'highest', label: 'Diff Max'}
 	];
 	for(let d = 1; d <= 10; d++) {
-		optionsDiffMax.push({ value: `${d}`, label: `${d}*` });
+		optionsDiffMax.push({ value: `${d}`, label: `max. ${d}*` });
 	}
 
 	const optionsYearMin = [
 		{ value: 'start', label: 'Start year'}
 	];
 	for(let d = 2014; d <= 2023; d++) {
-		optionsYearMin.push({ value: `${d}`, label: `${d}` });
+		optionsYearMin.push({ value: `${d}`, label: `min. ${d}` });
 	}
 
 	const optionsYearMax = [
 		{ value: 'now', label: 'End year'}
 	];
 	for(let d = 2014; d <= 2023; d++) {
-		optionsYearMax.push({ value: `${d}`, label: `${d}` });
+		optionsYearMax.push({ value: `${d}`, label: `max. ${d}` });
 	}
 
 	return (<>

@@ -1,6 +1,6 @@
+import fltrstyle from '@/styles/modules/filter.module.css';
 import { FiltersContext } from '@/lib/contexts/filters_context';
 import { SongFilters } from '@/lib/types/next_song_params';
-import fltrstyle from '@/styles/modules/filter.module.css';
 import { SyntheticEvent, useContext, useEffect } from 'react';
 
 type FilterProps = {

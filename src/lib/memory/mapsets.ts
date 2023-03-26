@@ -16,7 +16,7 @@ export class Mapsets {
 	}
 
 	private async fetchMapset(mapset_id: number): Promise<Mapset> {
-		const beatmaps = (await query(`SELECT * FROM osu_allbeatmaps WHERE beatmapset_id = ${mapset_id}`)) as Beatmap[];
+		const beatmaps = (await query(`SELECT * FROM osu_allbeatmaps WHERE mode = 3 AND approved_date > "2005-01-01" AND beatmapset_id = ${mapset_id}`)) as Beatmap[];
 		
 		const mapset = {
 			beatmapset_id: beatmaps[0].beatmapset_id,

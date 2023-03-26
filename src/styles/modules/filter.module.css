@@ -1,0 +1,24 @@
+.filter {
+	margin: 5px;
+}
+
+.filter > select {
+	width: 100%;
+	height: 100%;
+	font-family: 'VT323-Regular';
+	font-size: 120%;
+	color: white;
+	background: rgba(0,0,0,.3);
+	padding: 10px;
+	border: 1px solid rgba(0,0,0,.4);
+	border-radius: 20px;
+}
+
+.filter > select:hover {
+	cursor: pointer;
+	background: rgba(0,0,0,.1);
+}
+
+.filter > select * {
+	background-color: rgb(19, 0, 49);
+}

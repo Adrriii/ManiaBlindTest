@@ -6,7 +6,7 @@ import { GameId, GameInfo, getEmptyGameInfo } from "../types/game_info";
 import songs from "./songs";
 import { ServerSong } from "./server_song";
 import { Mapset } from "../db/beatmap";
-import { SongFilters } from "../types/next_song_params";
+import { NextSongParams, SongFilters } from "../types/next_song_params";
 
 export class Games {
 	games: Map<GameId, GameInfo>;
@@ -21,12 +21,12 @@ export class Games {
 		return this.games.has(id) ? this.games.get(id) as GameInfo : null;
 	}
 
-	async newGame(filters: SongFilters): Promise<GameInfo> {
+	async newGame(params: NextSongParams): Promise<GameInfo> {
 		const game = getEmptyGameInfo();
 		let song: Song;
 	
 		do {
-			song = await this.nextSong(filters);
+			song = await this.nextSong(params.filters);
 		} while(!this.tryHash(song.hash_id))
 		
 		game.id = this.randomGameId();
@@ -37,6 +37,7 @@ export class Games {
 		
 		game.song_uri = `${process.env.SONG_URI}/games/${game.id}/${game.id}.mp3`;
 		game.song_length = serverSong.getSome().total_length as number;
+		game.params = params;
 
 		this.games.set(game.id, game);
 
