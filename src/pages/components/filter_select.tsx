@@ -14,7 +14,7 @@ export default function Filter({ filter_key, options, styles }: FilterProps) {
 	const filter_id = `${filter_key}_select`;
 
 	function updateKey(evt: SyntheticEvent) {
-		let filters = {...songFilters};
+		const filters = {...songFilters};
 		filters[filter_key] = getSelect().value as any;
 		setSongFilters(filters);
 	}
