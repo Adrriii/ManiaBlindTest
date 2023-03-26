@@ -1,0 +1,13 @@
+
+.icon_text {
+	display: flex;
+	flex-direction: column;
+}
+
+.icon {
+	font-size: 150%;
+}
+
+.text {
+    white-space: nowrap;
+}

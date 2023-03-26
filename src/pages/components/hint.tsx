@@ -1,8 +1,11 @@
 import styles from '@/styles/modules/hint.module.css'
+import btn_style from '@/styles/modules/button.module.css'
 import moment from 'moment';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { GameContext } from '../../lib/contexts/game_context';
 import { GameInfo } from '../../lib/types/game_info';
+import Button from './button';
+import IconText from './icon_text';
 
 export default function Hint() {
 	const {gameInfo, setGameInfo} = useContext(GameContext);
@@ -85,11 +88,6 @@ export default function Hint() {
 	return (<>
 		{ gameInfo.song_uri && 
 		<div className={styles.hint}>
-			{ !gameInfo.over &&
-				<div className={styles.next_hint}>
-					<button onClick={nextHint}>Next hint</button>
-				</div>
-			}
 			<div className={styles.hint_map}>
 				<div className={styles.hint_banner_container}>
 					<div className={styles.hint_banner}>
@@ -128,6 +126,16 @@ export default function Hint() {
 					</div>
 				</div>
 			</div>
+			{ !gameInfo.over &&
+				<Button 
+					button={
+						<button onClick={nextHint}>
+							<IconText icon={'help'} text={'Hint'}></IconText>
+						</button>
+					}
+					styles={[styles.next_hint]}
+				></Button>
+			}
 		</div>
 		}
 	</>)

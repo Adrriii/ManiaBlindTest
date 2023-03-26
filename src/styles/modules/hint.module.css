@@ -7,31 +7,10 @@
 }
 
 .next_hint {
-	width: fit-content;
 	margin-left: auto;
 	margin-right: auto;
 	margin-top: 20px;
 	margin-bottom: 20px;
-}
-
-.next_hint > button {
-	font-family: 'VT323-Regular';
-	font-size: 120%;
-	color: white;
-	background: rgba(0,0,0,.3);
-	padding: 25px;
-	border: 1px solid rgba(0,0,0,.4);
-	border-radius: 20px;
-}
-
-.next_hint > button:hover {
-	cursor: pointer;
-	background: rgba(0,0,0,.2);
-}
-
-.next_hint > button:active {
-	cursor: pointer;
-	background: rgba(0,0,0,.1);
 }
 
 .hint_map {

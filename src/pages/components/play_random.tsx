@@ -2,6 +2,8 @@ import styles from '@/styles/modules/play_random.module.css'
 import { useContext, useEffect, useState } from 'react';
 import { GameContext } from '../../lib/contexts/game_context';
 import { GameInfo, getEmptyGameInfo } from '../../lib/types/game_info';
+import Button from './button';
+import IconText from './icon_text';
 
 export default function PlayRandom() {
 	const {gameInfo, setGameInfo} = useContext(GameContext);
@@ -79,22 +81,56 @@ export default function PlayRandom() {
 	return (<>
 		<div className={styles.play_random}>
 			<audio id='player' onEnded={handleEnded}></audio>
-			{ !isPlaying && <button onClick={playRandom}>Play</button>}
-			{ !isPaused && isPlaying && <button onClick={pause}>Pause</button>}
-			{ isPaused && isPlaying && <button onClick={resume}>Resume</button>}
-			{ isPlaying && gameInfo.over && <button onClick={next}>Next !</button>}
-			{ isPlaying && !gameInfo.over && <button onClick={giveUp}>Give Up</button>}
+			<div className={styles.buttons}>
+				{ !isPlaying &&
+					<Button button={
+						<button onClick={playRandom}>
+							<IconText icon={'play_arrow'} text={'Play'}></IconText>
+						</button>
+					}></Button>
+				}
+				{ !isPaused && isPlaying &&
+					<Button button={
+						<button onClick={pause}>
+							<IconText icon={'pause'} text={'Pause'}></IconText>
+						</button>
+					}></Button>
+				}
+				{ isPaused && isPlaying &&
+					<Button button={
+						<button onClick={resume}>
+							<IconText icon={'resume'} text={'Resume'}></IconText>
+						</button>
+					}></Button>
+				}
+				{ isPlaying && gameInfo.over &&
+					<Button button={
+						<button onClick={next}>
+							<IconText icon={'skip_next'} text={'Next'}></IconText>
+						</button>
+					}></Button>
+				}
+				{ isPlaying && !gameInfo.over &&
+					<Button button={
+						<button onClick={giveUp}>
+							<IconText icon={'stop'} text={'Give Up'}></IconText>
+						</button>
+					}></Button>
+				}
+			</div>
 			
-			<input
-				type="range"
-				min={0}
-				max={1}
-				step={0.02}
-				value={volume}
-				onChange={event => {
-					handleVolumeChange(event.target.valueAsNumber)
-				}}
-			/>
+			<div className={styles.volume_controller}>
+				<input
+					type="range"
+					min={0}
+					max={1}
+					step={0.02}
+					value={volume}
+					onChange={event => {
+						handleVolumeChange(event.target.valueAsNumber)
+					}}
+				/>
+			</div>
 		</div>
 	</>)
 }

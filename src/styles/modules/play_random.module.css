@@ -14,3 +14,23 @@
 	margin: 2em;
 	padding: 1%;
 }
+
+.buttons {
+	display: flex;
+	justify-content: center;
+}
+
+.buttons > div {
+	margin: 5px;
+}
+
+.volume_controller {
+	position: fixed;
+	bottom:0;
+	right:0;
+	margin: 3%;
+	background: rgba(0,0,0,.5);
+	padding: 1.5%;
+	border-radius: 20px;
+	border: 1px solid rgba(0,0,0,.75);
+}
