@@ -27,7 +27,7 @@ export default function Filter({ filter_key, options, styles }: FilterProps) {
 		<div className={`${fltrstyle.filter} ${styles?.join(' ')}`}>
 			<select id={filter_id} value={songFilters[filter_key]} onChange={updateKey}>
 				{
-					options.map(opt => {
+					options?.map(opt => {
 						return <option value={opt.value} key={opt.value}>{opt.label}</option>
 					})
 				}
