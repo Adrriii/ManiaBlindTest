@@ -1,4 +1,5 @@
 import styles from '@/styles/modules/hint.module.css'
+import moment from 'moment';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { GameContext } from '../../lib/contexts/game_context';
 import { GameInfo } from '../../lib/types/game_info';
@@ -18,6 +19,10 @@ export default function Hint() {
 
 	function getProgressBar(): HTMLDivElement {
 		return document.getElementById('progress_bar') as HTMLDivElement;
+	}
+
+	function displayDate(date: string): string {
+		return moment(date).format('DD MMMM YYYY');
 	}
 
 	function displaySeconds(secs: number): string {
@@ -103,7 +108,7 @@ export default function Hint() {
 				<div className={styles.hint_info_container}>
 					<div className={addClass(styles.hint_ranked_dates)}>
 						<div className={styles.hint_label}>Ranked date :</div>
-						<div className={styles.hint_info}>{gameInfo.hints?.rank_dates.length > 0 ? gameInfo.hints?.rank_dates.join(', ') : '???'}</div>
+						<div className={styles.hint_info}>{gameInfo.hints?.rank_dates.length > 0 ? gameInfo.hints?.rank_dates.map((d) => displayDate(d)).join(', ') : '???'}</div>
 					</div>
 					<div className={addClass(styles.hint_mappers)}>
 						<div className={styles.hint_label}>Mapped by :</div>

@@ -42,11 +42,12 @@ export default function PlayRandom() {
 	}
 
 	function handleEnded() {
-		getPlayer().src = '';
-		setIsPlaying(false);
+		setIsPaused(true);
+		giveUp();
 	}
 
 	useEffect(() => {
+		if(!gameInfo.id) return;
 		fetch(`/api/next_hint/${gameInfo.id}`).then((data: Response) => {
 			data.json().then((game: any) => {
 				if(game.error) {
