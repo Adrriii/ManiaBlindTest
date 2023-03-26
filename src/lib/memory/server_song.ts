@@ -32,7 +32,7 @@ export class ServerSong {
 				.then((results) => {
 					results.forEach((result) => {
 						mapsets.getMapset(result.beatmapset_id).then((mapset) => {
-							if(mapset !== null) {
+							if(mapset) {
 								this.mapsets.set(mapset.beatmapset_id, mapset);
 							}
 							resolve();
