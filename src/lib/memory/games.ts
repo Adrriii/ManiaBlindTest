@@ -6,6 +6,7 @@ import { GameId, GameInfo, getEmptyGameInfo } from "../types/game_info";
 import songs from "./songs";
 import { ServerSong } from "./server_song";
 import { Mapset } from "../db/beatmap";
+import { SongFilters } from "../types/next_song_params";
 
 export class Games {
 	games: Map<GameId, GameInfo>;
@@ -20,12 +21,12 @@ export class Games {
 		return this.games.has(id) ? this.games.get(id) as GameInfo : null;
 	}
 
-	async newGame(): Promise<GameInfo> {
+	async newGame(filters: SongFilters): Promise<GameInfo> {
 		const game = getEmptyGameInfo();
 		let song: Song;
 	
 		do {
-			song = await this.nextSong();
+			song = await this.nextSong(filters);
 		} while(!this.tryHash(song.hash_id))
 		
 		game.id = this.randomGameId();
@@ -54,8 +55,36 @@ export class Games {
 			&& fs.existsSync(`${dir}/${hash}.mp3`);
 	}
 	
-	private async nextSong(): Promise<Song> {
-		const mapset = (await query('SELECT * FROM osu_allbeatmaps WHERE mode = 3 AND approved_date > "2005-01-01" ORDER BY RAND() LIMIT 1') as Mapset[])[0];
+	private async nextSong(filters: SongFilters): Promise<Song> {
+		const conditions: string[] = [];
+		const values: string[] = [];
+
+		if(filters.keys && filters.keys !== 'all') {
+			conditions.push('AND diff_size = ?');
+			values.push(filters.keys);
+		}
+
+		if(filters.difficulty_min && filters.difficulty_min !== 'lowest') {
+			conditions.push('AND difficultyrating >= ?');
+			values.push(filters.difficulty_min.toString());
+		}
+
+		if(filters.difficulty_max && filters.difficulty_max !== 'highest') {
+			conditions.push('AND difficultyrating < ?');
+			values.push(filters.difficulty_max.toString());
+		}
+
+		if(filters.year_min && filters.year_min !== 'start') {
+			conditions.push('AND YEAR(approved_date) >= ?');
+			values.push(filters.year_min.toString());
+		}
+
+		if(filters.year_max && filters.year_max !== 'now') {
+			conditions.push('AND YEAR(approved_date) < ?');
+			values.push(filters.year_max.toString());
+		}
+
+		const mapset = (await query('SELECT * FROM osu_allbeatmaps WHERE mode = 3 AND approved_date > "2005-01-01" '+conditions.join(' ')+' ORDER BY RAND() LIMIT 1', values) as Mapset[])[0];
 		const result = (await query('SELECT * FROM song WHERE nomp3 = 0 AND beatmapset_id = '+mapset.beatmapset_id, [], 'blindtest') as Song[])
 
 		return result.length > 0 ? result[0] : { hash_id: '', beatmapset_id: -1, nomp3: true};

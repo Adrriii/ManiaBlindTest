@@ -1,8 +1,13 @@
+import { FiltersContext } from '@/lib/contexts/filters_context';
+import { NextSongParams, SongFilters, getEmptySongFilters } from '@/lib/types/next_song_params';
 import styles from '@/styles/modules/play_random.module.css'
+import { RequestInit } from 'next/dist/server/web/spec-extension/request';
 import { useContext, useEffect, useState } from 'react';
+import Select from 'react-select';
 import { GameContext } from '../../lib/contexts/game_context';
 import { GameInfo, getEmptyGameInfo } from '../../lib/types/game_info';
 import Button from './button';
+import Filters from './filters';
 import IconText from './icon_text';
 
 export default function PlayRandom() {
@@ -11,6 +16,9 @@ export default function PlayRandom() {
 	const [isPlaying, setIsPlaying] = useState(false);
 	const [isPaused, setIsPaused] = useState(false);
 	const [givingUp, setGiveUp] = useState(false);
+	
+	const [songFilters, setSongFilters] = useState<SongFilters>(getEmptySongFilters());
+	const filtersContext = {songFilters, setSongFilters};
 
 	useEffect(() => {
 		if(gameInfo.id && getPlayer().src !== gameInfo.song_uri) {
@@ -26,7 +34,15 @@ export default function PlayRandom() {
 	}
 	
 	function playRandom() {
-		fetch('/api/next_song').then((data: Response) => {
+		const params: NextSongParams = {
+			filters: songFilters
+		}
+		const opts: RequestInit = {
+			method: 'POST',
+			headers: { 'Content-type': 'application/json' },
+			body: JSON.stringify(params)
+		}
+		fetch('/api/next_song', opts).then((data: Response) => {
 			data.json().then((game: GameInfo) => {
 				setGameInfo(game);
 			});
@@ -131,6 +147,10 @@ export default function PlayRandom() {
 					}}
 				/>
 			</div>
+
+			<FiltersContext.Provider value={filtersContext}>
+				<Filters/>
+			</FiltersContext.Provider>
 		</div>
 	</>)
 }

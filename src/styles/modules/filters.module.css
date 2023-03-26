@@ -1,0 +1,22 @@
+.filters {
+	position: fixed;
+	left:0;
+	bottom: 0;
+	margin: 3%;
+}
+
+.filter_panel {
+	background: rgba(0,0,0,.3);
+	padding: 10px;
+	border: 1px solid rgba(0,0,0,.4);
+	border-radius: 20px;
+
+	position: fixed;
+	margin-left: 3%;
+	left: 0;
+	min-width: 200px;
+	width: 15%;
+	height: 65%;
+	top: 45%;
+	transform: translateY(-50%);
+}
