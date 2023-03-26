@@ -5,6 +5,7 @@ import { Song } from "../db/song";
 import { GameId, GameInfo, getEmptyGameInfo } from "../types/game_info";
 import songs from "./songs";
 import { ServerSong } from "./server_song";
+import { Mapset } from "../db/beatmap";
 
 export class Games {
 	games: Map<GameId, GameInfo>;
@@ -54,7 +55,10 @@ export class Games {
 	}
 	
 	private async nextSong(): Promise<Song> {
-		return (await query('SELECT * FROM song WHERE nomp3 = 0 ORDER BY RAND() LIMIT 1', [], 'blindtest') as Song[])[0];
+		const mapset = (await query('SELECT * FROM osu_allbeatmaps WHERE mode = 3 AND approved_date > "2005-01-01" ORDER BY RAND() LIMIT 1') as Mapset[])[0];
+		const result = (await query('SELECT * FROM song WHERE nomp3 = 0 AND beatmapset_id = '+mapset.beatmapset_id, [], 'blindtest') as Song[])
+
+		return result.length > 0 ? result[0] : { hash_id: '', beatmapset_id: -1, nomp3: true};
 	}
 
 	private randomGameId(): GameId {
