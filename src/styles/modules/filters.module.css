@@ -3,6 +3,7 @@
 	left:0;
 	bottom: 0;
 	margin: 3%;
+	z-index: 500;
 }
 
 .filter_panel {
