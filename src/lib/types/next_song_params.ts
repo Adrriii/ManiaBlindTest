@@ -4,7 +4,9 @@ export type SongFilters = {
 	difficulty_max?: 'highest' | number,
 	year_min?: 'start' | number,
 	year_max?: 'now' | number,
+	status?: 'all' | 1 | 4,
 }
+// Status: 1=ranked, 4=loved
 
 export function getEmptySongFilters(): SongFilters {
 	return {
@@ -13,6 +15,7 @@ export function getEmptySongFilters(): SongFilters {
 		difficulty_max: 'highest',
 		year_min: 'start',
 		year_max: 'now',
+		status: 'all'
 	};
 }
 

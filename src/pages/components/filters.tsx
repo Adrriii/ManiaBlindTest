@@ -1,12 +1,27 @@
 import { FiltersContext } from '@/lib/contexts/filters_context';
 import styles from '@/styles/modules/filters.module.css';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import Button from './button';
 import Filter from './filter_select';
 import IconText from './icon_text';
 
 export default function Filters() {
+	const {songFilters, setSongFilters} = useContext(FiltersContext);
 	const [open, setOpen] = useState(false);
+	const [nb_results, setNbResults] = useState(0);
+
+	useEffect(() => {
+		const opts: RequestInit = {
+			method: 'POST',
+			headers: { 'Content-type': 'application/json' },
+			body: JSON.stringify(songFilters)
+		}
+		fetch('/api/filters_results', opts).then((data: Response) => {
+			data.json().then((results: number) => {
+				setNbResults(results);
+			});
+		});
+	}, [songFilters]);
 
 	function Open() {
 		setOpen(!open);
@@ -39,6 +54,12 @@ export default function Filters() {
 	for(let d = 2014; d <= 2023; d++) {
 		optionsYearMax.push({ value: `${d}`, label: `max. ${d}` });
 	}
+	
+	const optionsStatus = [
+		{ value: 'all', label: 'All Status'},
+		{ value: '1', label: 'Ranked Only'},
+		{ value: '4', label: 'Loved Only'}
+	];
 
 	return (<>
 		<div className={styles.filters}>
@@ -59,6 +80,8 @@ export default function Filters() {
 					<Filter filter_key={'difficulty_max'} options={optionsDiffMax}></Filter>
 					<Filter filter_key={'year_min'} options={optionsYearMin}></Filter>
 					<Filter filter_key={'year_max'} options={optionsYearMax}></Filter>
+					<Filter filter_key={'status'} options={optionsStatus}></Filter>
+					<div className={styles.nb_results}>Results: {nb_results}</div>
 				</div>
 			}
 		</div>

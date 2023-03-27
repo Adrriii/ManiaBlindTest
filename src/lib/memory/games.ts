@@ -11,6 +11,8 @@ import { HintCreator } from "../types/hints";
 import moment from "moment";
 import Score from "../types/score";
 
+type FilteredQuery = {query: string, values: string[]};
+
 export class Games {
 	games: Map<GameId, ServerGame>;
 
@@ -118,14 +120,20 @@ export class Games {
 		return current;
 	}
 
+	async getFiltersNbResults(filters: SongFilters): Promise<number> {
+		const filteredQuery = this.buildFilteredQuery(filters);
+
+		return (await query(`SELECT COUNT(*) as result FROM (SELECT beatmapset_id ${filteredQuery.query} GROUP BY beatmapset_id) as t`, filteredQuery.values) as {result: number}[])[0].result;
+	}
+
 	private tryHash(hash: string): boolean {
 		const dir = `${process.env.SONG_DIR}/${hash}`;
 		
 		return fs.existsSync(dir)
 			&& fs.existsSync(`${dir}/${hash}.mp3`);
 	}
-	
-	private async nextSong(filters: SongFilters): Promise<Song> {
+
+	private buildFilteredQuery(filters: SongFilters): FilteredQuery {
 		const conditions: string[] = [];
 		const values: string[] = [];
 
@@ -154,7 +162,21 @@ export class Games {
 			values.push(filters.year_max.toString());
 		}
 
-		const mapset = (await query('SELECT * FROM osu_allbeatmaps WHERE mode = 3 AND approved_date > "2005-01-01" '+conditions.join(' ')+' ORDER BY RAND() LIMIT 1', values) as Mapset[])[0];
+		if(filters.status && filters.status !== 'all') {
+			conditions.push('AND approved = ?');
+			values.push(filters.status.toString());
+		}
+
+		return {
+			query: 'FROM osu_allbeatmaps WHERE mode = 3 AND approved_date > "2005-01-01" '+conditions.join(' '),
+			values: values
+		};
+	}
+	
+	private async nextSong(filters: SongFilters): Promise<Song> {
+		const filteredQuery = this.buildFilteredQuery(filters);
+
+		const mapset = (await query(`SELECT * ${filteredQuery.query} ORDER BY RAND() LIMIT 1`, filteredQuery.values) as Mapset[])[0];
 		const result = (await query('SELECT * FROM song WHERE nomp3 = 0 AND beatmapset_id = '+mapset.beatmapset_id, [], 'blindtest') as Song[])
 
 		return result.length > 0 ? result[0] : { hash_id: '', beatmapset_id: -1, nomp3: true, title: '', artist: ''};
