@@ -132,10 +132,10 @@ export default function Hint() {
 				<Guess/>
 			}
 			<div className={styles.action_buttons}>
-				{ !gameInfo.over &&
+				{ (!gameInfo.over) &&
 					<Button 
 						button={
-							<button onClick={nextHint}>
+							<button onClick={nextHint} disabled={gameInfo.hints_used > 4}>
 								<IconText icon={'help'} text={'Hint'}></IconText>
 							</button>
 						}

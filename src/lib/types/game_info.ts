@@ -21,6 +21,9 @@ export type GameInfo = {
 	guess_song: string,
 	guess_mapset: number,
 	guesses_used: number,
+	start_time: number,
+	end_time: number,
+	score: number,
 }
 
 export function getEmptyGameInfo(): GameInfo {
@@ -43,5 +46,8 @@ export function getEmptyGameInfo(): GameInfo {
 		guess_song: '',
 		guess_mapset: -1,
 		guesses_used: 0,
+		start_time: -1,
+		end_time: -1,
+		score: -1,
 	};
 }

@@ -6,6 +6,7 @@ import { GameInfo, getEmptyGameInfo } from '../../lib/types/game_info';
 import Hint from './hint';
 import PlayRandom from './play_random';
 import Result from './result';
+import Score from './score';
 
 export default function Game() {
 	const [gameInfo, setGameInfo] = useState<GameInfo>(getEmptyGameInfo());
@@ -17,6 +18,7 @@ export default function Game() {
 				<GameContext.Provider value={gameContext} >
 					<PlayRandom/>
 					<Hint/>
+					<Score/>
 					<Result/>
 				</GameContext.Provider>
 			</div>

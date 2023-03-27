@@ -61,7 +61,6 @@ export default function PlayRandom() {
 
 	function handleEnded() {
 		setIsPaused(true);
-		giveUp();
 	}
 
 	useEffect(() => {

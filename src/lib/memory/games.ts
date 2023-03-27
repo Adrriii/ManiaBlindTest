@@ -8,6 +8,8 @@ import { ServerSong } from "./server_song";
 import { Mapset } from "../db/beatmap";
 import { NextSongParams, SongFilters } from "../types/next_song_params";
 import { HintCreator } from "../types/hints";
+import moment from "moment";
+import Score from "../types/score";
 
 export class Games {
 	games: Map<GameId, ServerGame>;
@@ -39,6 +41,7 @@ export class Games {
 		game.song_uri = `${process.env.SONG_URI}/games/${game.id}/${game.id}.mp3`;
 		game.song_length = serverSong.getSome().total_length as number;
 		game.params = params;
+		game.start_time = moment.now();
 
 		this.games.set(game.id, {
 			game: game,
@@ -49,13 +52,14 @@ export class Games {
 	}
 
 	makeGuess(game: GameInfo): GameInfo {
-		const guess = game.guess_mapset;
 		const serverGame = games.getGame(game.id) as ServerGame;
+		serverGame.game.guess_mapset = game.guess_mapset;
+		serverGame.game.guess_song = game.guess_song;
 		game = serverGame.game;
 
 		game.guesses_used++;
 
-		if(serverGame?.answer.mapsets.has(guess)) {
+		if(serverGame?.answer.mapsets.has(game.guess_mapset)) {
 			game.win = true;
 		} else {
 			game.win = false;
@@ -70,6 +74,8 @@ export class Games {
 
 	gameOver(game: GameInfo): void {
 		game.over = true;
+		game.end_time = moment.now();
+		game.score = Score.computeScore(game);
 		this.games.delete(game.id);
 	}
 	

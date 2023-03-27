@@ -14,7 +14,12 @@ export default function Result() {
 					<div className={styles.win}>Congratulations !</div> :
 					(
 						gameInfo.guesses_used > 0 ?
-						<div className={styles.lose}>Wrong !</div> :
+						(
+							<>
+								<div className={styles.lose}>Wrong !</div>
+								<div className={styles.lose_guess}>You guessed <span className={styles.guess_title}>{gameInfo.guess_song}</span></div>
+							</>
+						) :
 						<div className={styles.lose}></div>
 					)
 				)

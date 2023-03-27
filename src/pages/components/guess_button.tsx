@@ -7,7 +7,6 @@ import IconText from './icon_text';
 
 export default function GuessButton() {
 	const {gameInfo, setGameInfo} = useContext(GameContext);
-	const [buttonState, setButtonState] = useState<'neutral' | 'win' | 'lose'>('neutral');
 
 	function makeGuess() {
 		if(gameInfo.guess_mapset) {
@@ -24,16 +23,6 @@ export default function GuessButton() {
 		}
 	}
 
-	useEffect(() => {
-		if(gameInfo.over) {
-			if(gameInfo.win) {
-				setButtonState('win');
-			} else {
-				setButtonState('lose');
-			}
-		}
-	}, [gameInfo]);
-
 	return (<>
 		<Button
 			button={
@@ -44,7 +33,7 @@ export default function GuessButton() {
 					<IconText icon={'done'} text={'Guess'}></IconText>
 				</button>
 			}
-			styles={[styles.guess_button_valid, buttonState]}
+			styles={[styles.guess_button_valid]}
 		/>
 	</>)
 }
