@@ -157,7 +157,7 @@ export class Games {
 		const mapset = (await query('SELECT * FROM osu_allbeatmaps WHERE mode = 3 AND approved_date > "2005-01-01" '+conditions.join(' ')+' ORDER BY RAND() LIMIT 1', values) as Mapset[])[0];
 		const result = (await query('SELECT * FROM song WHERE nomp3 = 0 AND beatmapset_id = '+mapset.beatmapset_id, [], 'blindtest') as Song[])
 
-		return result.length > 0 ? result[0] : { hash_id: '', beatmapset_id: -1, nomp3: true};
+		return result.length > 0 ? result[0] : { hash_id: '', beatmapset_id: -1, nomp3: true, title: '', artist: ''};
 	}
 
 	private randomGameId(): GameId {

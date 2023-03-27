@@ -1,5 +1,7 @@
 export type Song = {
 	beatmapset_id: number,
 	hash_id: string,
-	nomp3: boolean
+	nomp3: boolean,
+	title: string,
+	artist: string,
 }

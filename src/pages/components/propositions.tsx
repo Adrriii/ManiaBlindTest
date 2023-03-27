@@ -1,12 +1,13 @@
 import { GameContext } from '@/lib/contexts/game_context';
 import { Mapset } from '@/lib/db/beatmap';
+import { Song } from '@/lib/db/song';
 import { SearchResults } from '@/lib/types/search_results';
 import style from '@/styles/modules/propositions.module.css';
 import { SyntheticEvent, useContext } from 'react';
 
 type PropositionsProps = {
 	search_type: keyof SearchResults
-	results: Mapset[]
+	results: Song[]
 }
 
 export default function Propositions({ search_type, results }: PropositionsProps) {
@@ -21,7 +22,7 @@ export default function Propositions({ search_type, results }: PropositionsProps
 		}
 	}
 
-	function getMapsetText(mapset: Mapset) {
+	function getSongText(mapset: Song) {
 		return `${mapset.artist} - ${mapset.title}`;
 	}
 
@@ -43,11 +44,11 @@ export default function Propositions({ search_type, results }: PropositionsProps
 					return <div 
 						key={result.beatmapset_id} 
 						className={style.propositions_option}
-						title={getMapsetText(result)}
+						title={getSongText(result)}
 						onClick={choseGuess}
 						value-mapset={result.beatmapset_id}
 						>
-							{getMapsetText(result)}
+							{getSongText(result)}
 						</div>
 				})
 			}

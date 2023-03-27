@@ -1,13 +1,14 @@
 import query from "../db/db";
 import { Beatmap, Mapset } from "../db/beatmap";
+import { Song } from "../db/song";
 
 export class Mapsets {
 	
-	all_mapsets: Map<number, Mapset>;
+	search_base: Map<number, Song>;
 	mapsets: Map<number, Mapset>;	
 
 	constructor() {
-		this.all_mapsets = new Map();
+		this.search_base = new Map();
 		this.mapsets = new Map();
 	}
 
@@ -18,8 +19,8 @@ export class Mapsets {
 	}
 
 	async initAll() {
-		(await query('SELECT * FROM osu_allbeatmaps WHERE mode = 3 AND approved_date > "2005-01-01" GROUP BY beatmapset_id', [], 'stats') as Beatmap[]).forEach((beatmap) => {
-			this.all_mapsets.set(beatmap.beatmapset_id, this.mergeBeatmapToMapset(beatmap));
+		(await query('SELECT * FROM song WHERE nomp3 = 0', [], 'blindtest') as Song[]).forEach((song) => {
+			this.search_base.set(song.beatmapset_id, song);
 		});
 	}
 
