@@ -23,7 +23,7 @@ export default async function handler(
 	}
 
 	function checkSameSong(mapsets: Mapset[], mapset: Mapset): boolean {
-		return mapsets.some((set) => getSongString(set) === getSongString(mapset));
+		return mapsets.some((set) => wordMatch(getSongString(set), getSongString(mapset)));
 	}
 	
 	mapsets.all_mapsets.forEach((mapset, ) => {
