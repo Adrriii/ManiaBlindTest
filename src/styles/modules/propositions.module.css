@@ -1,0 +1,17 @@
+.propositions_option {
+	overflow: hidden;
+	white-space: nowrap;
+
+	background: rgba(29,0,72,.5);
+	padding: 3px;
+	padding-left: 7px;
+}
+
+.propositions_option:hover {
+	background: rgba(29,0,72,.9);
+	cursor: pointer;
+}
+
+.propositions_header {
+	padding: 3px;
+}

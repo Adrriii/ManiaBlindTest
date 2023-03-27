@@ -6,6 +6,8 @@ import { GameContext } from '../../lib/contexts/game_context';
 import { GameInfo } from '../../lib/types/game_info';
 import Button from './button';
 import IconText from './icon_text';
+import Guess from './guess';
+import GuessButton from './guess_button';
 
 export default function Hint() {
 	const {gameInfo, setGameInfo} = useContext(GameContext);
@@ -100,7 +102,7 @@ export default function Hint() {
 						<div className={styles.progress_bar_bg}></div>
 						<div id='progress_bar' className={styles.progress_bar_fill}></div>
 						<div className={styles.progress_bar_start}>{displaySeconds(currentTime)}</div>
-						<div className={styles.progress_bar_end}>{displaySeconds(gameInfo.song_length)}</div>
+						<div className={styles.progress_bar_end}>{displaySeconds(Math.floor(getPlayer().duration))}</div>
 					</div>
 				</div>
 				<div className={styles.hint_info_container}>
@@ -127,15 +129,23 @@ export default function Hint() {
 				</div>
 			</div>
 			{ !gameInfo.over &&
-				<Button 
-					button={
-						<button onClick={nextHint}>
-							<IconText icon={'help'} text={'Hint'}></IconText>
-						</button>
-					}
-					styles={[styles.next_hint]}
-				></Button>
+				<Guess/>
 			}
+			<div className={styles.action_buttons}>
+				{ !gameInfo.over &&
+					<Button 
+						button={
+							<button onClick={nextHint}>
+								<IconText icon={'help'} text={'Hint'}></IconText>
+							</button>
+						}
+						styles={[styles.next_hint]}
+					></Button>
+				}
+				{ !gameInfo.over &&
+					<GuessButton/>
+				}
+			</div>
 		</div>
 		}
 	</>)

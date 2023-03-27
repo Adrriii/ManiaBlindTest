@@ -1,6 +1,6 @@
 .button {
-	width: 130px;
-	height: 130px;
+	width: 12vh;
+	height: 12vh;
 }
 
 .button > button {
@@ -15,9 +15,20 @@
 	border-radius: 20px;
 }
 
+.button > button[disabled=disabled], .button > button:disabled {
+	color: rgb(110, 110, 110);
+	background: rgba(0,0,0,.1);
+	border: 1px solid rgba(0,0,0,.2);
+}
+
 .button > button:hover {
 	cursor: pointer;
 	background: rgba(0,0,0,.2);
+}
+
+.button > button[disabled=disabled]:hover, .button > button:disabled:hover {
+	cursor: unset;
+	background: rgba(0,0,0,.1);
 }
 
 .button > button:active {

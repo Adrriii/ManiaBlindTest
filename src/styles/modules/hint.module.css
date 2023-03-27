@@ -6,11 +6,13 @@
 	margin-top: 30px;
 }
 
-.next_hint {
-	margin-left: auto;
-	margin-right: auto;
-	margin-top: 20px;
-	margin-bottom: 20px;
+.action_buttons {
+	display: flex;
+	justify-content: center;
+}
+
+.action_buttons > div {
+	margin: 10px;
 }
 
 .hint_map {

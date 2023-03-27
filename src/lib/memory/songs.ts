@@ -41,8 +41,7 @@ export class Songs {
 			// Delete the file after 1 hour (safe time to be paused)
 			setTimeout(() => {
 				try {
-					fs.unlinkSync(game_audio);
-					fs.rmdirSync(dest);
+					fs.rmSync(dest, { recursive: true, force: true });
 				} catch(e) {
 					console.error(e);
 				}

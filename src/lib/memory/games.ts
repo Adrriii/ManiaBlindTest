@@ -2,14 +2,15 @@ import query from "../db/db";
 import Crypto from 'crypto';
 import fs from 'fs';
 import { Song } from "../db/song";
-import { GameId, GameInfo, getEmptyGameInfo } from "../types/game_info";
+import { GameId, GameInfo, ServerGame, getEmptyGameInfo } from "../types/game_info";
 import songs from "./songs";
 import { ServerSong } from "./server_song";
 import { Mapset } from "../db/beatmap";
 import { NextSongParams, SongFilters } from "../types/next_song_params";
+import { HintCreator } from "../types/hints";
 
 export class Games {
-	games: Map<GameId, GameInfo>;
+	games: Map<GameId, ServerGame>;
 
 	constructor() {
 		const opt: fs.RmOptions = { recursive: true, force: true };
@@ -17,8 +18,8 @@ export class Games {
 		this.games = new Map();
 	}
 
-	getGame(id: GameId): GameInfo | null {
-		return this.games.has(id) ? this.games.get(id) as GameInfo : null;
+	getGame(id: GameId): ServerGame | null {
+		return this.games.has(id) ? this.games.get(id) as ServerGame : null;
 	}
 
 	async newGame(params: NextSongParams): Promise<GameInfo> {
@@ -39,7 +40,30 @@ export class Games {
 		game.song_length = serverSong.getSome().total_length as number;
 		game.params = params;
 
-		this.games.set(game.id, game);
+		this.games.set(game.id, {
+			game: game,
+			answer: serverSong
+		});
+
+		return game;
+	}
+
+	makeGuess(game: GameInfo): GameInfo {
+		const guess = game.guess_mapset;
+		const serverGame = games.getGame(game.id) as ServerGame;
+		game = serverGame.game;
+
+		game.guesses_used++;
+
+		if(serverGame?.answer.mapsets.has(guess)) {
+			game.win = true;
+		} else {
+			game.win = false;
+		}
+
+		while(!game.over) {
+			this.setNextHint(game);
+		}
 
 		return game;
 	}
@@ -47,6 +71,45 @@ export class Games {
 	gameOver(game: GameInfo): void {
 		game.over = true;
 		this.games.delete(game.id);
+	}
+	
+	setNextHint(current: GameInfo, request = false): GameInfo {
+		const answers = songs.getSong(current.id)?.mapsets as Map<number, Mapset>;
+		const answer = answers.get(answers.keys().next().value as number) as Mapset;
+		if(request) current.hints_used++;
+
+		if(current.hints.rank_dates.length === 0) {
+			current.hints.rank_dates = HintCreator.getRankDates(answers);
+			return current;
+		}
+
+		if(current.hints.mappers.length === 0) {
+			current.hints.mappers = HintCreator.getMappers(answers);
+			return current;
+		}
+
+		if(current.hints.mapsets_diffs.length === 0) {
+			current.hints.mapsets_diffs = HintCreator.getDiffs(answers);
+			return current;
+		}
+
+		if(!current.hints.artist) {
+			current.hints.artist = HintCreator.getArtist(answer);
+			return current;
+		}
+
+		if(!current.hints.banner_url) {
+			current.hints.banner_url = HintCreator.getBannerUrl(answer);
+			return current;
+		}
+
+		if(!current.hints.title) {
+			current.hints.title = HintCreator.getTitle(answer);
+			games.gameOver(current);
+			return current;
+		}
+
+		return current;
 	}
 
 	private tryHash(hash: string): boolean {

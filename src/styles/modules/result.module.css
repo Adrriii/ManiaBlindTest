@@ -1,0 +1,12 @@
+.result {
+	display: flex;
+	justify-content: center;
+	margin-top: 3vh;
+}
+
+.result > .win {
+	color: rgb(0,255,0);
+}
+.result > .lose {
+	color: rgb(225,12,12);
+}
