@@ -6,7 +6,7 @@ import { GameId, GameInfo, ServerGame, getEmptyGameInfo } from "../types/game_in
 import songs from "./songs";
 import { ServerSong } from "./server_song";
 import { Mapset } from "../db/beatmap";
-import { NextSongParams, SongFilters } from "../types/next_song_params";
+import { isFilterRanked, NextSongParams, SongFilters } from "../types/next_song_params";
 import { HintCreator } from "../types/hints";
 import moment from "moment";
 import Score from "../types/score";
@@ -46,6 +46,7 @@ export class Games {
 		game.song_length = serverSong.getSome().total_length as number;
 		game.params = params;
 		game.start_time = moment.now();
+		game.filters = params.filters;
 
 		this.games.set(game.id, {
 			game: game,
@@ -70,7 +71,7 @@ export class Games {
 
 		if(serverGame?.answer.mapsets.has(game.guess_mapset)) {
 			game.win = true;
-			if(userInfo.osu_id > 0) {
+			if(userInfo.osu_id > 0 && isFilterRanked(game.filters)) {
 				addUserWin(userInfo.osu_id);
 			}
 		} else {

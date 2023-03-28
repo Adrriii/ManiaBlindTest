@@ -4,9 +4,19 @@ export type SongFilters = {
 	difficulty_max?: 'highest' | number,
 	year_min?: 'start' | number,
 	year_max?: 'now' | number,
-	status?: 'all' | 1 | 4,
+	status?: 'all' | '1' | '4',
 }
 // Status: 1=ranked, 4=loved
+
+export function isFilterRanked(filters: SongFilters): boolean {
+	if(filters.difficulty_max !== 'highest') return false;
+	if(filters.difficulty_min !== 'lowest') return false;
+	if(filters.year_min !== 'start') return false;
+	if(filters.year_max !== 'now') return false;
+	if(filters.status === '4') return false;
+	console.log(filters);
+	return true;
+}
 
 export function getEmptySongFilters(): SongFilters {
 	return {

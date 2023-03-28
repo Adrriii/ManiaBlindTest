@@ -21,3 +21,11 @@
 	top: 45%;
 	transform: translateY(-50%);
 }
+
+.is_ranked_true {
+	color: rgba(0,255,0);
+}
+
+.is_ranked_false {
+	color: rgb(225,12,12);
+}

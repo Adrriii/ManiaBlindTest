@@ -1,4 +1,5 @@
 import { FiltersContext } from '@/lib/contexts/filters_context';
+import { isFilterRanked } from '@/lib/types/next_song_params';
 import styles from '@/styles/modules/filters.module.css';
 import { useContext, useEffect, useState } from 'react';
 import Button from './button';
@@ -9,6 +10,7 @@ export default function Filters() {
 	const {songFilters, setSongFilters} = useContext(FiltersContext);
 	const [open, setOpen] = useState(false);
 	const [nb_results, setNbResults] = useState(0);
+	const [filters_ranked, setFiltersRanked] = useState(true);
 
 	useEffect(() => {
 		const opts: RequestInit = {
@@ -21,6 +23,8 @@ export default function Filters() {
 				setNbResults(results);
 			});
 		});
+
+		setFiltersRanked(isFilterRanked(songFilters));
 	}, [songFilters]);
 
 	function Open() {
@@ -82,6 +86,7 @@ export default function Filters() {
 					<Filter filter_key={'year_max'} options={optionsYearMax}></Filter>
 					<Filter filter_key={'status'} options={optionsStatus}></Filter>
 					<div className={styles.nb_results}>Results: {nb_results}</div>
+					<div className={styles.is_ranked}>Counts for wins: <span className={filters_ranked ? styles.is_ranked_true : styles.is_ranked_false}>{filters_ranked ? 'YES' : 'NO'}</span></div>
 				</div>
 			}
 		</div>

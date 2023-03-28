@@ -1,6 +1,6 @@
 import { ServerSong } from "../memory/server_song";
 import { Hints } from "./hints";
-import { getEmptyNextSongParams, NextSongParams } from "./next_song_params";
+import { getEmptyNextSongParams, getEmptySongFilters, NextSongParams, SongFilters } from "./next_song_params";
 
 export type GameId = string;
 
@@ -24,6 +24,7 @@ export type GameInfo = {
 	start_time: number,
 	end_time: number,
 	score: number,
+	filters: SongFilters,
 }
 
 export function getEmptyGameInfo(): GameInfo {
@@ -49,5 +50,6 @@ export function getEmptyGameInfo(): GameInfo {
 		start_time: -1,
 		end_time: -1,
 		score: -1,
+		filters: getEmptySongFilters()
 	};
 }
