@@ -1,12 +1,16 @@
 import { GameContext } from '@/lib/contexts/game_context';
+import { UserContext } from '@/lib/contexts/user_context';
 import { GameInfo } from '@/lib/types/game_info';
+import { UserInfo } from '@/lib/types/user_info';
 import styles from '@/styles/modules/hint.module.css';
+import { getCookie } from 'cookies-next';
 import { ReactNode, useContext, useEffect, useState } from 'react';
 import Button from './button';
 import IconText from './icon_text';
 
 export default function GuessButton() {
 	const {gameInfo, setGameInfo} = useContext(GameContext);
+	const {userInfo, setUserInfo} = useContext(UserContext);
 
 	function makeGuess() {
 		if(gameInfo.guess_mapset) {
@@ -18,6 +22,13 @@ export default function GuessButton() {
 			fetch('/api/make_guess', opts).then((data: Response) => {
 				data.json().then((game: GameInfo) => {
 					setGameInfo(game);
+
+					fetch('/api/user/me').then((data: Response) => {
+						if(data.status !== 200) return;
+						data.json().then((userInfo: UserInfo) => {
+							setUserInfo(userInfo);
+						});
+					});
 				});
 			});
 		}

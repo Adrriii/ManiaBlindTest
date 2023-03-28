@@ -10,6 +10,8 @@ import { NextSongParams, SongFilters } from "../types/next_song_params";
 import { HintCreator } from "../types/hints";
 import moment from "moment";
 import Score from "../types/score";
+import { addUserWin } from '../db/user_stats';
+import { UserInfo } from "../types/user_info";
 
 type FilteredQuery = {query: string, values: string[]};
 
@@ -53,8 +55,13 @@ export class Games {
 		return game;
 	}
 
-	makeGuess(game: GameInfo): GameInfo {
-		const serverGame = games.getGame(game.id) as ServerGame;
+	makeGuess(game: GameInfo, userInfo: UserInfo): GameInfo |null {
+		const serverGame = games.getGame(game.id);
+
+		if(serverGame === null) {
+			return null;
+		}
+
 		serverGame.game.guess_mapset = game.guess_mapset;
 		serverGame.game.guess_song = game.guess_song;
 		game = serverGame.game;
@@ -63,6 +70,9 @@ export class Games {
 
 		if(serverGame?.answer.mapsets.has(game.guess_mapset)) {
 			game.win = true;
+			if(userInfo.osu_id > 0) {
+				addUserWin(userInfo.osu_id);
+			}
 		} else {
 			game.win = false;
 		}

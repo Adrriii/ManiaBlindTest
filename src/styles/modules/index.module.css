@@ -4,3 +4,11 @@
 	flex-direction: column;
 	align-items: stretch;
 }
+
+.authent {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100%;
+	font-size: 200%;
+}

@@ -2,7 +2,7 @@ import { FiltersContext } from '@/lib/contexts/filters_context';
 import { NextSongParams, SongFilters, getEmptySongFilters } from '@/lib/types/next_song_params';
 import styles from '@/styles/modules/play_random.module.css'
 import { RequestInit } from 'next/dist/server/web/spec-extension/request';
-import { useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import Select from 'react-select';
 import { GameContext } from '../../lib/contexts/game_context';
 import { GameInfo, getEmptyGameInfo } from '../../lib/types/game_info';
@@ -19,6 +19,50 @@ export default function PlayRandom() {
 	
 	const [songFilters, setSongFilters] = useState<SongFilters>(getEmptySongFilters());
 	const filtersContext = {songFilters, setSongFilters};
+	
+	const search_id = 'guess_search_input';
+
+	function getSearch(): HTMLInputElement | null {
+		return document.getElementById(search_id) as HTMLInputElement | null;
+	}
+
+	const [pressed, setPressed] = useState<{[keys: string]: boolean}>({});
+
+	useEffect(() => {
+		console.log(pressed);
+		if(isPlaying && pressed['Alt'] && pressed['*']) {
+			if(gameInfo.over) {
+				next();
+			} else {
+				giveUp();
+			}
+		}
+	}, [pressed]);
+
+	const handleKeyPress = useCallback((event: { key:  string; }) => {
+		console.log('down',event.key);
+		setPressed(pressed => ({
+			...pressed,
+			[event.key]: true
+		}));
+	}, [pressed]);	
+	const handleKeyUp = useCallback((event: { key: string; }) => {
+		console.log('up',event.key);
+		setPressed(pressed => ({
+			...pressed,
+			[event.key]: false
+		}));
+	}, [pressed]);	
+
+	useEffect(() => {
+		document.addEventListener('keydown', handleKeyPress);
+		document.addEventListener('keyup', handleKeyUp);
+	
+		return () => {
+			document.removeEventListener('keydown', handleKeyPress);
+			document.removeEventListener('keyup', handleKeyUp);
+		};
+	}, []);
 
 	useEffect(() => {
 		if(gameInfo.id && getPlayer().src !== gameInfo.song_uri) {
@@ -26,6 +70,7 @@ export default function PlayRandom() {
 			getPlayer().play();
 			setIsPlaying(true);
 			setIsPaused(false);
+			getSearch()?.focus();
 		}
 	}, [gameInfo])
 

@@ -1,0 +1,1 @@
+export type OsuMode = "osu" | "mania" | "taiko" | "fruits";
