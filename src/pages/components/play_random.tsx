@@ -29,7 +29,6 @@ export default function PlayRandom() {
 	const [pressed, setPressed] = useState<{[keys: string]: boolean}>({});
 
 	useEffect(() => {
-		console.log(pressed);
 		if(isPlaying && pressed['Alt'] && pressed['*']) {
 			if(gameInfo.over) {
 				next();
@@ -40,14 +39,12 @@ export default function PlayRandom() {
 	}, [pressed]);
 
 	const handleKeyPress = useCallback((event: { key:  string; }) => {
-		console.log('down',event.key);
 		setPressed(pressed => ({
 			...pressed,
 			[event.key]: true
 		}));
 	}, [pressed]);	
 	const handleKeyUp = useCallback((event: { key: string; }) => {
-		console.log('up',event.key);
 		setPressed(pressed => ({
 			...pressed,
 			[event.key]: false
