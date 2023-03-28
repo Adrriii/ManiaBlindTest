@@ -13,10 +13,6 @@ export default function Header() {
 		window.location.reload();
 	}
 
-	useEffect(() => {
-		console.log('userInfo', userInfo);
-	}, [userInfo])
-
 	return (<>
 		<div className={styles.header}>
 			<div className={styles.header_logo}>osu!mania blind test</div>

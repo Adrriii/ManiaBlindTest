@@ -14,7 +14,6 @@ export function isFilterRanked(filters: SongFilters): boolean {
 	if(filters.year_min !== 'start') return false;
 	if(filters.year_max !== 'now') return false;
 	if(filters.status === '4') return false;
-	console.log(filters);
 	return true;
 }
 

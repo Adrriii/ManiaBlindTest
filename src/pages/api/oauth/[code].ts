@@ -42,11 +42,9 @@ export default async function handler(
 
 			res.status(200).json(userInfo);
 		}).catch((data) => {
-			console.log(data);
 			res.status(404).json(InvalidOsuUser);
 		})
 	}).catch((data) => {
-		console.log(data);
 		res.status(404).json(InvalidOauth);
 	});
 }
