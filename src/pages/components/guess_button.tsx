@@ -12,6 +12,8 @@ export default function GuessButton() {
 	const {gameInfo, setGameInfo} = useContext(GameContext);
 	const {userInfo, setUserInfo} = useContext(UserContext);
 
+	const guessButtonId = 'guess_button';
+
 	function makeGuess() {
 		if(gameInfo.guess_mapset) {
 			const opts: RequestInit = {
@@ -38,6 +40,7 @@ export default function GuessButton() {
 		<Button
 			button={
 				<button
+					id={guessButtonId}
 					onClick={makeGuess}
 					disabled={!gameInfo.guess_mapset || gameInfo.guess_mapset < 0}
 				>

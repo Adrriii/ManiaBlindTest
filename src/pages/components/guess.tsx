@@ -1,9 +1,11 @@
-import { GameContext } from '@/lib/contexts/game_context';
-import { Mapset } from '@/lib/db/beatmap';
-import { getEmptySearchResults, SearchResults } from '@/lib/types/search_results';
 import style from '@/styles/modules/guess.module.css';
-import { ReactNode, useContext, useEffect, useState } from 'react';
+
 import Propositions from './propositions';
+
+import { GameContext } from '@/lib/contexts/game_context';
+import { Song } from '@/lib/db/song';
+import { getEmptySearchResults, SearchResults } from '@/lib/types/search_results';
+import { useCallback, useContext, useEffect, useState } from 'react';
 
 export default function Guess() {
 	const {gameInfo, setGameInfo} = useContext(GameContext);
@@ -25,6 +27,7 @@ export default function Guess() {
 		newGameInfo.guess_mapset = -1;
 
 		setGameInfo(newGameInfo);
+		setFocusedProposition(null); 
 
 		const search = getSearch().value;
 		if(!search) {
@@ -44,6 +47,102 @@ export default function Guess() {
 		});
 	}
 
+	function tryMoveSelection(selection: Song[], direction: 'up' | 'down', next_selections: Song[][]): boolean {
+		if(selection.length === 0) return false;
+		
+		if(focusedProposition === null) {
+			setFocusedProposition(selection[direction === 'down' ? 0 : (selection.length - 1)]);
+			return true;
+		}
+		
+		for(
+			let i = (direction === 'down' ? 0 : (selection.length - 1));
+			(direction === 'down' ? i < selection.length : i >= 0);
+			(direction === 'down' ? i++ : i--)
+		) {
+			if(selection[i].hash_id === focusedProposition.hash_id) {
+				const test = selection[(direction === 'down' ? i+1 : i-1)];
+				if(test === undefined) {
+					if(next_selections.length === 0) return false;
+					const next = next_selections[0];
+					if(next.length === 0) return false;
+					setFocusedProposition(next[(direction === 'down' ? 0 : next.length - 1)]);
+					return true;
+				}
+				setFocusedProposition(test);
+				return true;
+			}
+		}
+
+		if(next_selections.length === 0) return false;
+		return tryMoveSelection(next_selections[0], direction, next_selections.slice(1, next_selections.length));
+	}
+
+	function moveSelectionUp() {
+		if(propositions.artists.length === 0 && propositions.titles.length === 0) return;
+		
+		tryMoveSelection(propositions.titles, 'up', [propositions.artists]);
+	}
+
+	function moveSelectionDown() {
+		if(propositions.artists.length === 0 && propositions.titles.length === 0) return;
+		
+		tryMoveSelection(propositions.artists, 'down', [propositions.titles]);
+	}
+	
+
+	function getSongText(mapset: Song) {
+		return `${mapset.artist} - ${mapset.title}`;
+	}
+
+	const [focusedProposition, setFocusedProposition] = useState<Song | null>(null);
+	const [pressed, setPressed] = useState<{[keys: string]: boolean}>({});
+	const guessButtonId = 'guess_button';
+
+	useEffect(() => {
+		if(pressed['ArrowUp']) {
+			moveSelectionUp();
+		}
+		if(pressed['ArrowDown']) {
+			moveSelectionDown();
+		}
+		if(pressed['Enter'] && gameInfo.guess_mapset > 0) {
+			document.getElementById(guessButtonId)?.click();
+			return;
+		}
+		if(pressed['Enter'] && focusedProposition !== null) {
+			let ngame = {...gameInfo};
+			ngame.guess_mapset = focusedProposition.beatmapset_id;
+			ngame.guess_song = getSongText(focusedProposition);
+			
+			setGameInfo(ngame);
+		}
+	}, [pressed]);
+
+	const handleKeyPress = useCallback((event: { key:  string; }) => {
+		console.log(event.key);
+		setPressed(pressed => ({
+			...pressed,
+			[event.key]: true
+		}));
+	}, [pressed]);	
+	const handleKeyUp = useCallback((event: { key: string; }) => {
+		setPressed(pressed => ({
+			...pressed,
+			[event.key]: false
+		}));
+	}, [pressed]);
+
+	useEffect(() => {
+		document.addEventListener('keydown', handleKeyPress);
+		document.addEventListener('keyup', handleKeyUp);
+	
+		return () => {
+			document.removeEventListener('keydown', handleKeyPress);
+			document.removeEventListener('keyup', handleKeyUp);
+		};
+	}, []);
+
 	useEffect(() => {
 		if(gameInfo.guess_song && gameInfo.guess_song !== getSearch().value) {
 			getSearch().value = gameInfo.guess_song;
@@ -56,11 +155,11 @@ export default function Guess() {
 			<div className={style.propositions_list}>
 				{
 					propositions.artists.length > 0 &&
-					<Propositions search_type={'artists'} results={propositions.artists}></Propositions>
+					<Propositions search_type={'artists'} results={propositions.artists} focused={focusedProposition}></Propositions>
 				}
 				{
 					propositions.titles.length > 0 &&
-					<Propositions search_type={'titles'} results={propositions.titles}></Propositions>
+					<Propositions search_type={'titles'} results={propositions.titles} focused={focusedProposition}></Propositions>
 				}
 			</div>
 			<input 

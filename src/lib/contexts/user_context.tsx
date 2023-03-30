@@ -4,6 +4,7 @@ import { getEmptyUserInfo, UserInfo } from "../types/user_info";
 import { randomUUID } from 'crypto';
 import sha256 from 'sha256';
 import query from "../db/db";
+import { getEmptyUserStats, UserStats } from "../db/user_stats";
 
 type UserContextType = {
 	userInfo: UserInfo | null,
@@ -23,11 +24,17 @@ export function checkUserCookie(cookie: string) {
 	return sha256(`${parts[0]}:${parts[1]}:${process.env.AUTH_SALT}`) === parts[2];
 }
 
-export async function getUserFromCookie(cookie: string) {
-	const parts = cookie.split(':');
-	const values = [parts[0]];
+export function InitUserContext(setUserInfo: Dispatch<SetStateAction<UserInfo | null>>, osu_id: number | 'me' = 'me') {
+	fetch(`/api/user/${osu_id}`).then((data: Response) => {
+		if(data.status !== 200) {
+			setUserInfo(getEmptyUserInfo());
+			return;
+		}
 
-	return (await query('SELECT * FROM user WHERE osu_id = ?', values, 'blindtest') as User[])[0];
+		data.json().then((userInfo: UserInfo) => {
+			setUserInfo(userInfo);
+		});
+	});
 }
 
 export const UserContext = createContext<UserContextType>({

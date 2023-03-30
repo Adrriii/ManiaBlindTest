@@ -7,6 +7,10 @@ export const UserNotFound: ApiError = {
 	error: 'User not found'
 }
 
+export const InvalidParameter: ApiError = {
+	error: 'Invalid parameter'
+}
+
 export const InvalidGame: ApiError = {
 	error: 'Invalid game'
 }

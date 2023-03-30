@@ -1,5 +1,8 @@
 import moment from "moment";
+import { Song } from "../db/song";
+import { UserScore } from "../db/user_score";
 import { GameInfo } from "./game_info";
+import { UserInfo } from "./user_info";
 
 const hintCosts = [
 	5000, 		// date
@@ -9,6 +12,14 @@ const hintCosts = [
 	100000,		// background (often show the title itself)
 	1000000,	// title = give up
 ]
+
+export type ScoreFull = {
+	score: UserScore,
+	user: UserInfo,
+	song: Song
+}
+
+export type ScoreGrade = 'X' | 'SS' | 'S' | 'A' | 'B' | 'C' | 'D' | 'F';
 
 export default class Score {
 
@@ -30,5 +41,17 @@ export default class Score {
 		score = Math.floor(score);
 
 		return Math.max(score, 0);
+	}
+
+	static getScoreGrade(score: UserScore): ScoreGrade {
+		if(score.score === 1000000) return 'X';
+		if(score.score >= 990000) return 'SS';
+		if(score.score >= 950000) return 'S';
+		if(score.score >= 850000 && score.hints_used === 0) return 'S';
+		if(score.score >= 800000) return 'A';
+		if(score.score >= 600000) return 'B';
+		if(score.score >= 500000) return 'C';
+		if(score.score > 0) return 'D';
+		return 'F';
 	}
 }

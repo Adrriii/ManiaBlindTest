@@ -19,19 +19,29 @@ export default async function handler(
 		return string.toLowerCase().includes(search.toLowerCase());
 	}
 
+	function wordEqual(search: string, string: string): boolean {
+		return string.toLowerCase() === search.toLowerCase();
+	}
+
+	function songEqual(set: Song, mapset: Song): boolean {
+		return set.hash_id === mapset.hash_id || wordEqual(getSongString(set), getSongString(mapset));
+	}
+
 	function getSongString(mapset: Song): string {
 		return `${mapset.artist} - ${mapset.title}`;
 	}
 
 	function checkSameSong(mapsets: Song[], mapset: Song): boolean {
-		return mapsets.some((set) => wordMatch(getSongString(set), getSongString(mapset)));
+		return mapsets.some((set) => songEqual(set, mapset));
 	}
 	
 	mapsets.search_base.forEach((song, ) => {
-		if(results.titles.length < cat_limit && wordMatch(search, song.title) && !checkSameSong(results.titles, song)) {
+		if(checkSameSong(results.titles, song)) return;
+		if(checkSameSong(results.artists, song)) return;
+		if(results.titles.length < cat_limit && wordMatch(search, song.title)) {
 			results.titles.push(song);
 		}
-		if(results.artists.length < cat_limit && wordMatch(search, song.artist) && !checkSameSong(results.artists, song)) {
+		if(results.artists.length < cat_limit && wordMatch(search, song.artist)) {
 			results.artists.push(song);
 		}
 	})

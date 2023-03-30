@@ -49,7 +49,7 @@ export default function PlayRandom() {
 			...pressed,
 			[event.key]: false
 		}));
-	}, [pressed]);	
+	}, [pressed]);
 
 	useEffect(() => {
 		document.addEventListener('keydown', handleKeyPress);

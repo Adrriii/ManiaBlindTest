@@ -42,7 +42,7 @@
 	object-position: center;
 }
 
-.header_logout:hover {
+.header_logout:hover, .header_username:hover, .header_profilepicture:hover {
 	cursor: pointer;
 	color: pink;
 }

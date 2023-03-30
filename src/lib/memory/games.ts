@@ -10,8 +10,9 @@ import { isFilterRanked, NextSongParams, SongFilters } from "../types/next_song_
 import { HintCreator } from "../types/hints";
 import moment from "moment";
 import Score from "../types/score";
-import { addUserWin } from '../db/user_stats';
+import { addUserLoss, addUserWin } from '../db/user_stats';
 import { UserInfo } from "../types/user_info";
+import { addUserScore, getUserScore } from "../db/user_score";
 
 type FilteredQuery = {query: string, values: string[]};
 
@@ -41,9 +42,15 @@ export class Games {
 		const serverSong = 
 			(await songs.initGameSong(game, song))
 			.filter((song) => song != null)[0] as ServerSong;
+
+		const someMapset = serverSong.getSome();
+		if(someMapset === undefined) {
+			console.log('Undefined mapset for song !');
+			console.log(serverSong);
+		}
 		
 		game.song_uri = `${process.env.SONG_URI}/games/${game.id}/${game.id}.mp3`;
-		game.song_length = serverSong.getSome().total_length as number;
+		game.song_length = someMapset.total_length as number;
 		game.params = params;
 		game.start_time = moment.now();
 		game.filters = params.filters;
@@ -69,17 +76,41 @@ export class Games {
 
 		game.guesses_used++;
 
+		while(!game.over) {
+			this.setNextHint(game);
+		}
+
 		if(serverGame?.answer.mapsets.has(game.guess_mapset)) {
 			game.win = true;
 			if(userInfo.osu_id > 0 && isFilterRanked(game.filters)) {
 				addUserWin(userInfo.osu_id);
+				const game_time = game.end_time - game.start_time;
+
+				getUserScore(userInfo.osu_id, serverGame.answer.song.hash_id).then((score) => {
+					let with_replace = true;
+					if(score) {
+						if(score.score > game.score) with_replace = false;
+						if(score.score === game.score && score.time_ms <= game_time) with_replace = false;
+					}
+					addUserScore({
+						osu_id: userInfo.osu_id,
+						hash_id: serverGame.answer.song.hash_id,
+						score: Score.computeScore(game),
+						hints_used: game.hints_used,
+						time_ms: game_time
+					}, with_replace);
+				})
 			}
 		} else {
 			game.win = false;
-		}
-
-		while(!game.over) {
-			this.setNextHint(game);
+			addUserLoss(userInfo.osu_id);
+			addUserScore({
+				osu_id: userInfo.osu_id,
+				hash_id: serverGame.answer.song.hash_id,
+				score: 0,
+				hints_used: game.hints_used,
+				time_ms: 0
+			}, false);
 		}
 
 		return game;

@@ -1,16 +1,17 @@
+import style from '@/styles/modules/propositions.module.css';
+
 import { GameContext } from '@/lib/contexts/game_context';
-import { Mapset } from '@/lib/db/beatmap';
 import { Song } from '@/lib/db/song';
 import { SearchResults } from '@/lib/types/search_results';
-import style from '@/styles/modules/propositions.module.css';
 import { SyntheticEvent, useContext } from 'react';
 
 type PropositionsProps = {
 	search_type: keyof SearchResults
-	results: Song[]
+	results: Song[],
+	focused: Song | null
 }
 
-export default function Propositions({ search_type, results }: PropositionsProps) {
+export default function Propositions({ search_type, results, focused }: PropositionsProps) {
 	const {gameInfo, setGameInfo} = useContext(GameContext);
 
 	function getSearchTypeLabel(search_type: keyof SearchResults): string {
@@ -43,7 +44,7 @@ export default function Propositions({ search_type, results }: PropositionsProps
 				results && results.map(result => {
 					return <div 
 						key={result.beatmapset_id} 
-						className={style.propositions_option}
+						className={`${style.propositions_option}${result.hash_id === focused?.hash_id ? ` ${style.focused}` : ''}`}
 						title={getSongText(result)}
 						onClick={choseGuess}
 						value-mapset={result.beatmapset_id}

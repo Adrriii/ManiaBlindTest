@@ -1,0 +1,85 @@
+.user_container {
+	display: flex;
+	justify-content: center;
+	align-items: flex-start;
+	height: 100%;
+	/* width: 100%; */
+	padding: 3vh;
+}
+
+.user_page {
+	width: 60%;
+	min-width: 350px;
+}
+
+.user_head {
+	height: 5vh;
+
+	background: rgba(0,0,0,.2);
+	border: 1px solid rgba(0,0,0,.3);
+
+	border-radius: 20px;
+	padding: 1vh;
+	
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.user_bloc_info {
+	margin: 1vh;
+	display: flex;
+	align-items: center;
+}
+
+.user_stats {
+	flex-grow: 100;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.user_stats > div {
+
+	background: rgba(0,0,0,.2);
+	border: 1px solid rgba(0,0,0,.3);
+
+	border-radius: 20px;
+	
+	font-size: 120%;
+	width: 30%;
+	height: 10vh;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin: 4vh;
+}
+
+.user_stats_wins {
+	color: green;
+}
+
+.user_stats_loss {
+	color: red;
+}
+
+.user_picture {
+	height: 15vh;
+	border: 4px solid rgba(0,0,0,.3);
+}
+
+.user_bloc_title {
+	height: 4vh;
+
+	background: rgba(0,0,0,.1);
+	border: 1px solid rgba(0,0,0,.3);
+
+	border-radius: 20px;
+	padding: 1vh;
+	margin: 1vh;
+	
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}

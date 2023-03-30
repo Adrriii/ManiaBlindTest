@@ -1,20 +1,19 @@
-import { checkUserCookie, getUserFromCookie } from '../contexts/user_context';
-import { User } from '../db/user';
+import { checkUserCookie } from '../contexts/user_context';
+import { getUserFromOsuId, User } from '../db/user';
 import { getEmptyUserStats, getUserStats, UserStats } from '../db/user_stats';
 
 export type UserInfo = {
 	osu_id: number,
 	username: string,
 	profile_picture: string,
-	user_stats: UserStats
+	user_stats?: UserStats
 }
 
-function fromUser(user: User): UserInfo {
+export function fromUser(user: User): UserInfo {
 	return {
 		osu_id: user.osu_id,
 		username: user.username as string,
-		profile_picture: user.profile_picture as string,
-		user_stats: getEmptyUserStats()
+		profile_picture: user.profile_picture as string
 	}
 }
 
@@ -22,19 +21,12 @@ export function getEmptyUserInfo(): UserInfo {
 	return {
 		osu_id: -1,
 		username: '',
-		profile_picture: '',
-		user_stats: {
-			osu_id: -1,
-			wins: -1
-		}
+		profile_picture: ''
 	}
 }
 
-export async function getCurrentUserInfo(auth_cookie: string | undefined): Promise<UserInfo> {
-	if(typeof auth_cookie !== 'string') return getEmptyUserInfo();
-	if(!checkUserCookie(auth_cookie)) return getEmptyUserInfo();
-
-	const userInfo = fromUser(await getUserFromCookie(auth_cookie));
+export async function getUserInfo(osu_id: number): Promise<UserInfo> {
+	const userInfo = fromUser(await getUserFromOsuId(osu_id));
 	if(userInfo.osu_id > 0) {
 		const userStats = await getUserStats(userInfo.osu_id);
 		if(userStats !== null) {
@@ -42,4 +34,13 @@ export async function getCurrentUserInfo(auth_cookie: string | undefined): Promi
 		}
 	}
 	return userInfo;
+}
+
+export async function getCurrentUserInfo(auth_cookie: string | undefined): Promise<UserInfo> {
+	if(typeof auth_cookie !== 'string') return getEmptyUserInfo();
+	if(!checkUserCookie(auth_cookie)) return getEmptyUserInfo();
+	
+	const parts = auth_cookie.split(':');
+
+	return getUserInfo(parseInt(parts[0]));
 }

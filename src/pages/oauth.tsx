@@ -1,9 +1,9 @@
-import Head from 'next/head'
 import styles from '@/styles/modules/index.module.css'
 
-import Header from './components/header';
+import SiteHead from './components/site_head';
+
 import { useEffect, useRef, useState } from 'react';
-import { getEmptyUserInfo, UserInfo } from '@/lib/types/user_info';
+import { UserInfo } from '@/lib/types/user_info';
 
 export default function Oauth() {
 	const once = useRef(false);
@@ -27,15 +27,9 @@ export default function Oauth() {
 	}, [])
 
 	return (<>
-		<Head>
-			<title>osu!mania Blind Test</title>
-			<meta name="description" content="Are you ready ?" />
-			<meta name="viewport" content="width=device-width, initial-scale=1" />
-			<link rel="icon" href="/favicon.png" />
-		</Head>
+		<SiteHead/>
 		<main className={styles.main}>
-			<Header/>
-			<div className={styles.authent}>
+			<div className={styles.center_big}>
 				{
 					userInfo &&
 					<div className={styles.authenticated}>

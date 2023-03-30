@@ -1,0 +1,50 @@
+.score_thumb {
+	display: flex;
+	justify-content: space-between;
+	background: rgba(80,0,130,.3);
+	border: 1px solid rgba(0,0,0,.4);
+	padding: 1vh;
+	margin: 1vh;
+	border-radius: 20px;
+	width: 90%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.score_thumb > div {
+	display: flex;
+	align-items: center;
+}
+
+.score_grade {
+	width: 2.5vh;
+	height: 2.5vh;
+	margin: 0.5vh;
+	margin-right: 1vh;
+}
+
+.score_grade > img {
+	width: 100%;
+	
+	object-fit: cover;
+}
+.score_song,
+.score_user {
+	flex-grow: 100;
+	max-width: 60%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.score_score {
+	flex-grow: 100;
+	display: flex;
+	justify-content: flex-end;
+}
+
+.score_time {
+	width: 15%;
+	display: flex;
+	justify-content: flex-end;
+}

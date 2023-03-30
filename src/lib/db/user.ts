@@ -19,3 +19,9 @@ export async function CreateOrRefreshUserToken(user: User) {
 	await query('REPLACE INTO user (osu_id, access_token, refresh_token, username, profile_picture) VALUES (?,?,?,?,?)', values, 'blindtest');
 	await query('INSERT INTO user_stats (osu_id) VALUES (?) ON DUPLICATE KEY UPDATE osu_id=osu_id', [user.osu_id.toString()], 'blindtest');
 }
+
+export async function getUserFromOsuId(osu_id: number) {
+	const values = [osu_id.toString()];
+
+	return (await query('SELECT * FROM user WHERE osu_id = ?', values, 'blindtest') as User[])[0];
+}

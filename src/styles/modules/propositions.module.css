@@ -12,6 +12,10 @@
 	cursor: pointer;
 }
 
+.focused {
+	background: rgba(64,0,159,.9);
+}
+
 .propositions_header {
 	padding: 3px;
 }
