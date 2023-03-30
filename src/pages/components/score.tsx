@@ -70,6 +70,7 @@ export default function Score() {
 					{
 						scores.scores.map(score_full =>
 							<ScoreThumb 
+								key={score_full.user.osu_id}
 								score_full={score_full}
 								mode={'user'}
 								hide_first={scores.own_score && scores.own_score.score.rank === 1}
