@@ -11,14 +11,14 @@ export default function User({ osu_id }: {osu_id: number}) {
 	const [userInfo, setUserInfo] = useState<UserInfo | null>(getEmptyUserInfo());
 
 	const [bestScores, setBestScores] = useState<ScoreFull[]>([]);
-	let bPage = 0;
-	let hasNextBest = true;
+	const bPage = 0;
+	const hasNextBest = true;
 	const bestPage = useRef({bPage}).current;
 	const nextBest = useRef({hasNextBest}).current;
 
 	const [recentScores, setRecentScores] = useState<ScoreFull[]>([]);
-	let rPage = 0;
-	let hasNextRecent = true;
+	const rPage = 0;
+	const hasNextRecent = true;
 	const recentPage = useRef({rPage}).current;
 	const nextRecent = useRef({hasNextRecent}).current;
 
@@ -72,7 +72,7 @@ export default function User({ osu_id }: {osu_id: number}) {
 				{
 					userInfo.osu_id > 0 &&
 					<div className={styles.user_page}>
-						<div className={styles.user_head}>{userInfo.username}'s profile</div>
+						<div className={styles.user_head}>{`${userInfo.username}'`}s profile</div>
 						<div className={styles.user_bloc_info}>
 							<img className={styles.user_picture} src={userInfo?.profile_picture}/>
 							{

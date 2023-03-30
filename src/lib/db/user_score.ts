@@ -38,7 +38,7 @@ export async function getSongScores(hash_id: string): Promise<UserScore[]> {
 export async function getUserScores(osu_id: number): Promise<UserScore[]> {
 	return await query('SELECT * FROM user_score WHERE osu_id = ?', [osu_id.toString()], 'blindtest') as UserScore[];
 }
-export async function getUserBestScores(osu_id: number, page: number = 1): Promise<{scores: UserScore[], has_more: boolean}> {
+export async function getUserBestScores(osu_id: number, page = 1): Promise<{scores: UserScore[], has_more: boolean}> {
 	const limit = 5;
 	const offset = (page - 1) * limit;
 
@@ -49,7 +49,7 @@ export async function getUserBestScores(osu_id: number, page: number = 1): Promi
 		has_more: results.length > limit
 	}
 }
-export async function getUserRecentScores(osu_id: number, page: number = 1): Promise<{scores: UserScore[], has_more: boolean}> {
+export async function getUserRecentScores(osu_id: number, page = 1): Promise<{scores: UserScore[], has_more: boolean}> {
 	const limit = 5;
 	const offset = (page - 1) * limit;
 	const results = await query(`SELECT * FROM user_score_all WHERE osu_id = ? ORDER BY score_date DESC LIMIT ${limit+1} OFFSET ${offset}`, [osu_id.toString()], 'blindtest') as UserScore[];

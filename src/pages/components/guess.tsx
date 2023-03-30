@@ -111,7 +111,7 @@ export default function Guess() {
 			return;
 		}
 		if(pressed['Enter'] && focusedProposition !== null) {
-			let ngame = {...gameInfo};
+			const ngame = {...gameInfo};
 			ngame.guess_mapset = focusedProposition.beatmapset_id;
 			ngame.guess_song = getSongText(focusedProposition);
 			
