@@ -34,3 +34,9 @@ export default async function query(
 	await dbs[db].end();
 	return results as RowDataPacket[];
 }
+
+export function transaction(
+	db: 'stats' | 'blindtest' = 'stats'
+): mariadb.Transaction {
+	return dbs[db].transaction();
+}

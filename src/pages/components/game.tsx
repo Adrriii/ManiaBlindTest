@@ -30,8 +30,8 @@ export default function Game() {
 					<GameContext.Provider value={gameContext} >
 						<PlayRandom/>
 						<Hint/>
-						<Score/>
 						<Result/>
+						<Score/>
 					</GameContext.Provider>
 				</div>
 			}

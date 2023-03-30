@@ -12,7 +12,7 @@ import moment from "moment";
 import Score from "../types/score";
 import { addUserLoss, addUserWin } from '../db/user_stats';
 import { UserInfo } from "../types/user_info";
-import { addUserScore, getUserScore } from "../db/user_score";
+import { addUserScore, getUserScore, reRankSongScores } from "../db/user_score";
 
 type FilteredQuery = {query: string, values: string[]};
 
@@ -63,7 +63,7 @@ export class Games {
 		return game;
 	}
 
-	makeGuess(game: GameInfo, userInfo: UserInfo): GameInfo |null {
+	async makeGuess(game: GameInfo, userInfo: UserInfo): Promise<GameInfo |null> {
 		const serverGame = games.getGame(game.id);
 
 		if(serverGame === null) {
@@ -73,6 +73,7 @@ export class Games {
 		serverGame.game.guess_mapset = game.guess_mapset;
 		serverGame.game.guess_song = game.guess_song;
 		game = serverGame.game;
+		game.answer = serverGame.answer.song;
 
 		game.guesses_used++;
 
@@ -83,16 +84,16 @@ export class Games {
 		if(serverGame?.answer.mapsets.has(game.guess_mapset)) {
 			game.win = true;
 			if(userInfo.osu_id > 0 && isFilterRanked(game.filters)) {
-				addUserWin(userInfo.osu_id);
+				await addUserWin(userInfo.osu_id);
 				const game_time = game.end_time - game.start_time;
 
-				getUserScore(userInfo.osu_id, serverGame.answer.song.hash_id).then((score) => {
+				await getUserScore(userInfo.osu_id, serverGame.answer.song.hash_id).then(async (score) => {
 					let with_replace = true;
 					if(score) {
 						if(score.score > game.score) with_replace = false;
 						if(score.score === game.score && score.time_ms <= game_time) with_replace = false;
 					}
-					addUserScore({
+					await addUserScore({
 						osu_id: userInfo.osu_id,
 						hash_id: serverGame.answer.song.hash_id,
 						score: Score.computeScore(game),
@@ -103,8 +104,8 @@ export class Games {
 			}
 		} else {
 			game.win = false;
-			addUserLoss(userInfo.osu_id);
-			addUserScore({
+			await addUserLoss(userInfo.osu_id);
+			await addUserScore({
 				osu_id: userInfo.osu_id,
 				hash_id: serverGame.answer.song.hash_id,
 				score: 0,

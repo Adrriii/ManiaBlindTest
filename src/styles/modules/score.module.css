@@ -5,3 +5,8 @@
 	margin-top: 1vh;
 	flex-direction: column;
 }
+
+.leaderboard,
+.own_score {
+	width: 100%;
+}

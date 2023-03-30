@@ -1,3 +1,4 @@
+import { Song } from "../db/song";
 import { ServerSong } from "../memory/server_song";
 import { Hints } from "./hints";
 import { getEmptyNextSongParams, getEmptySongFilters, NextSongParams, SongFilters } from "./next_song_params";
@@ -25,6 +26,7 @@ export type GameInfo = {
 	end_time: number,
 	score: number,
 	filters: SongFilters,
+	answer?: Song,
 }
 
 export function getEmptyGameInfo(): GameInfo {

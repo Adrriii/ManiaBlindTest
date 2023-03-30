@@ -13,7 +13,7 @@ export default async function handler(
 	
 	const userInfo = await getCurrentUserInfo(auth_token);
 	
-	const guess = games.makeGuess(req.body as GameInfo, userInfo);
+	const guess = await games.makeGuess(req.body as GameInfo, userInfo);
 
 	if(guess === null) {		
 		res.status(404).json(GameNotFound);

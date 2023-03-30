@@ -32,7 +32,7 @@ export default function User({ osu_id }: {osu_id: number}) {
 			if(data.status !== 200 && data.status !== 207) return;
 			if(data.status !== 207) nextBest.hasNextBest = false;
 
-			data.json().then((scores: ScoreFull[]) => setBestScores([...bestScores, ...scores]))
+			data.json().then((scores: ScoreFull[]) => setBestScores(bestScores => [...bestScores, ...scores]))
 		});
 	}
 
@@ -46,7 +46,7 @@ export default function User({ osu_id }: {osu_id: number}) {
 			if(data.status !== 200 && data.status !== 207) return;
 			if(data.status !== 207) nextRecent.hasNextRecent = false;
 
-			data.json().then((scores: ScoreFull[]) => setRecentScores([...recentScores, ...scores]))
+			data.json().then((scores: ScoreFull[]) => setRecentScores(recentScores => [...recentScores, ...scores]))
 		});
 	}
 
