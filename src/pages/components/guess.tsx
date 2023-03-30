@@ -51,8 +51,14 @@ export default function Guess() {
 		if(selection.length === 0) return false;
 		
 		if(focusedProposition === null) {
-			setFocusedProposition(selection[direction === 'down' ? 0 : (selection.length - 1)]);
-			return true;
+			const next = selection[direction === 'down' ? 0 : (selection.length - 1)];
+			if(next) {
+				setFocusedProposition(next);
+				return true;
+			}
+
+			if(next_selections.length === 0) return false;
+			return tryMoveSelection(next_selections[0], direction, next_selections.slice(1, next_selections.length));
 		}
 		
 		for(
