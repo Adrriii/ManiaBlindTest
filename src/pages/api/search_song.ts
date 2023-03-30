@@ -40,9 +40,11 @@ export default async function handler(
 		if(checkSameSong(results.artists, song)) return;
 		if(results.titles.length < cat_limit && wordMatch(search, song.title)) {
 			results.titles.push(song);
+			return;
 		}
 		if(results.artists.length < cat_limit && wordMatch(search, song.artist)) {
 			results.artists.push(song);
+			return;
 		}
 	})
 

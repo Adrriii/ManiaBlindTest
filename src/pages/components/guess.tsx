@@ -120,7 +120,6 @@ export default function Guess() {
 	}, [pressed]);
 
 	const handleKeyPress = useCallback((event: { key:  string; }) => {
-		console.log(event.key);
 		setPressed(pressed => ({
 			...pressed,
 			[event.key]: true
