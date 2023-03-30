@@ -51,7 +51,9 @@ export default function User({ osu_id }: {osu_id: number}) {
 	}
 
 	useEffect(() => {
-		InitUserContext(setUserInfo, osu_id);
+		if(osu_id !== undefined) {
+			InitUserContext(setUserInfo, osu_id);
+		}
 	}, []);
 
 	useEffect(() => {
