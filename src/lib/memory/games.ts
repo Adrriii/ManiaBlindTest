@@ -32,22 +32,22 @@ export class Games {
 	async newGame(params: NextSongParams): Promise<GameInfo> {
 		const game = getEmptyGameInfo();
 		let song: Song;
+		let someMapset: Mapset | undefined = undefined;
+		let serverSong: ServerSong | undefined = undefined;
 	
 		do {
 			song = await this.nextSong(params.filters);
-		} while(!this.tryHash(song.hash_id))
+
+			if(!this.tryHash(song.hash_id)) continue;
 		
-		game.id = this.randomGameId();
-
-		const serverSong = 
-			(await songs.initGameSong(game, song))
-			.filter((song) => song != null)[0] as ServerSong;
-
-		const someMapset = serverSong.getSome();
-		if(someMapset === undefined) {
-			console.log('Undefined mapset for song !');
-			console.log(serverSong);
-		}
+			game.id = this.randomGameId();
+	
+			serverSong = 
+				(await songs.initGameSong(game, song))
+				.filter((song) => song != null)[0] as ServerSong;
+	
+			someMapset = serverSong.getSome();
+		} while(serverSong === undefined || someMapset === undefined)
 		
 		game.song_uri = `${process.env.SONG_URI}/games/${game.id}/${game.id}.mp3`;
 		game.song_length = someMapset.total_length as number;
