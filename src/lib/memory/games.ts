@@ -166,7 +166,7 @@ export class Games {
 	async getFiltersNbResults(filters: SongFilters): Promise<number> {
 		const filteredQuery = this.buildFilteredQuery(filters);
 
-		return (await query(`SELECT COUNT(*) as result FROM (SELECT beatmapset_id ${filteredQuery.query} GROUP BY beatmapset_id) as t`, filteredQuery.values) as {result: number}[])[0].result;
+		return (await query(`SELECT COUNT(*) as result FROM (SELECT beatmapset_id ${filteredQuery.query} GROUP BY beatmapset_id) as t`, filteredQuery.values, 'blindtest') as {result: number}[])[0].result;
 	}
 
 	private tryHash(hash: string): boolean {
@@ -181,37 +181,39 @@ export class Games {
 		const values: string[] = [];
 
 		if(filters.keys && filters.keys !== 'all') {
-			conditions.push('AND diff_size = ?');
-			values.push(filters.keys);
+			// in db, bitwise enum 
+			// 0 = none, 1 = 4k, 2 = 7k, 3 = both
+			conditions.push('AND (f_keys = 3 OR f_keys = ?)');
+			values.push(filters.keys === '4' ? '1' : '2');
 		}
 
 		if(filters.difficulty_min && filters.difficulty_min !== 'lowest') {
-			conditions.push('AND difficultyrating >= ?');
+			conditions.push('AND f_diff_max >= ?');
 			values.push(filters.difficulty_min.toString());
 		}
 
 		if(filters.difficulty_max && filters.difficulty_max !== 'highest') {
-			conditions.push('AND difficultyrating < ?');
+			conditions.push('AND f_diff_min < ?');
 			values.push(filters.difficulty_max.toString());
 		}
 
 		if(filters.year_min && filters.year_min !== 'start') {
-			conditions.push('AND YEAR(approved_date) >= ?');
+			conditions.push('AND YEAR(f_date) >= ?');
 			values.push(filters.year_min.toString());
 		}
 
 		if(filters.year_max && filters.year_max !== 'now') {
-			conditions.push('AND YEAR(approved_date) < ?');
+			conditions.push('AND YEAR(f_date) < ?');
 			values.push(filters.year_max.toString());
 		}
 
 		if(filters.status && filters.status !== 'all') {
-			conditions.push('AND approved = ?');
+			conditions.push('AND f_status = ?');
 			values.push(filters.status.toString());
 		}
 
 		return {
-			query: 'FROM osu_allbeatmaps WHERE mode = 3 AND approved_date > "2005-01-01" '+conditions.join(' '),
+			query: 'FROM song WHERE available = 1 AND YEAR(f_date) > 2006 '+conditions.join(' '),
 			values: values
 		};
 	}
@@ -219,8 +221,7 @@ export class Games {
 	private async nextSong(filters: SongFilters): Promise<Song> {
 		const filteredQuery = this.buildFilteredQuery(filters);
 
-		const mapset = (await query(`SELECT * ${filteredQuery.query} ORDER BY RAND() LIMIT 1`, filteredQuery.values) as Mapset[])[0];
-		const result = (await query('SELECT * FROM song WHERE nomp3 = 0 AND beatmapset_id = '+mapset.beatmapset_id, [], 'blindtest') as Song[])
+		const result = (await query(`SELECT * ${filteredQuery.query} ORDER BY RAND() LIMIT 1`, filteredQuery.values, 'blindtest') as Song[]);
 
 		return result.length > 0 ? result[0] : { hash_id: '', beatmapset_id: -1, nomp3: true, title: '', artist: ''};
 	}
