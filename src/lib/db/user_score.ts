@@ -21,11 +21,12 @@ export async function addUserScore(userScore: Omit<UserScore, 'score_date'>, wit
 	const values: string[] = [
 		userScore.osu_id.toString(),
 		userScore.hash_id,
+		userScore.beatmapset_id.toString(),
 		userScore.score.toString(),
 		userScore.hints_used.toString(),
 		userScore.time_ms.toString(),
 	];
-	const base_query = '(osu_id, hash_id, score, hints_used, time_ms) VALUES (?,?,?,?,?)';
+	const base_query = '(osu_id, hash_id, beatmapset_id, score, hints_used, time_ms) VALUES (?,?,?,?,?,?)';
 
 	if(with_replace) {
 		await query(`REPLACE INTO user_score ${base_query}`, values, 'blindtest');
