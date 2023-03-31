@@ -7,6 +7,7 @@ import { getUserFromOsuId } from "./user";
 export type UserScore = {
 	osu_id: number,
 	hash_id: string,
+	beatmapset_id: number,
 	score_date: number,
 	score: number,
 	hints_used: number,

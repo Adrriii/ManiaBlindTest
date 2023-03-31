@@ -96,6 +96,7 @@ export class Games {
 					await addUserScore({
 						osu_id: userInfo.osu_id,
 						hash_id: serverGame.answer.song.hash_id,
+						beatmapset_id: serverGame.answer.song.beatmapset_id,
 						score: Score.computeScore(game),
 						hints_used: game.hints_used,
 						time_ms: game_time
@@ -108,6 +109,7 @@ export class Games {
 			await addUserScore({
 				osu_id: userInfo.osu_id,
 				hash_id: serverGame.answer.song.hash_id,
+				beatmapset_id: serverGame.answer.song.beatmapset_id,
 				score: 0,
 				hints_used: game.hints_used,
 				time_ms: 0
