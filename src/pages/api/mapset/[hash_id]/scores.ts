@@ -21,6 +21,12 @@ export default async function handler(
 	}
 
 	response.scores = await Promise.all((await getSongScores(hash_id, page)).map(async score => await getFullScore(score)));
+	response.scores = response.scores.sort((a,b) => {
+		return a.score.score > b.score.score 
+			|| a.score.time_ms < b.score.time_ms
+			|| a.score.hints_used < b.score.hints_used
+			|| a.score.score_date < b.score.score_date ? -1 : 1;
+	})
 	
 	const auth_token = getCookie(process.env.NEXT_PUBLIC_AUTH_COOKIE as string, { req, res })?.valueOf() as string | undefined;
 	
