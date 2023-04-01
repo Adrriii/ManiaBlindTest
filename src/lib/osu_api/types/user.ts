@@ -44,7 +44,7 @@ export type OsuApiUser = {
 		"id": number
 	},
 	"is_restricted": boolean,
-	"account_history": any[],
+	"account_history": unknown[],
 	"active_tournament_banner": string,
 	"badges": {
 		"awarded_at": string,

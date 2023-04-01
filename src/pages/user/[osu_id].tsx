@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
-import Site from '../components/site';
-import User from '../components/user';
+import Site from '../../lib/components/site';
+import User from '../../lib/components/user/user';
 
 export default function UserPage() {
 	const router = useRouter();

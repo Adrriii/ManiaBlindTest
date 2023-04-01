@@ -1,7 +1,7 @@
 import fltrstyle from '@/styles/modules/filter.module.css';
 import { FiltersContext } from '@/lib/contexts/filters_context';
 import { SongFilters } from '@/lib/types/next_song_params';
-import { SyntheticEvent, useContext } from 'react';
+import { useContext } from 'react';
 
 type FilterProps = {
 	filter_key: keyof SongFilters
@@ -15,7 +15,7 @@ export default function Filter({ filter_key, options, styles }: FilterProps) {
 
 	function updateKey() {
 		const filters = {...songFilters};
-		filters[filter_key] = getSelect().value as any;
+		filters[filter_key] = getSelect().value as never;
 		setSongFilters(filters);
 	}
 

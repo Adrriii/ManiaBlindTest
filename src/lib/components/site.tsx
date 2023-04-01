@@ -1,6 +1,6 @@
 import styles from '@/styles/modules/index.module.css'
 
-import SiteHead from '../components/site_head';
+import SiteHead from './site_head';
 
 import { UserInfo } from '@/lib/types/user_info';
 import { ReactNode, useEffect, useState } from 'react';

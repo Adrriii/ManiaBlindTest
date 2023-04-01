@@ -3,7 +3,7 @@ import styles from '@/styles/modules/result.module.css';
 import { useContext } from 'react';
 
 export default function Result() {
-	const {gameInfo, setGameInfo} = useContext(GameContext);
+	const {gameInfo, } = useContext(GameContext);
 
 	return (<>
 		<div className={styles.result}>

@@ -14,6 +14,11 @@
 	padding: 1em;
 }
 
+.header_nav {
+	display: flex;
+}
+
+.header_always,
 .header_login,
 .header_logged {
 	display: flex;
@@ -42,7 +47,7 @@
 	object-position: center;
 }
 
-.header_logout:hover, .header_username:hover, .header_profilepicture:hover {
+.header_logo:hover, .header_lbs:hover, .header_logout:hover, .header_username:hover, .header_profilepicture:hover {
 	cursor: pointer;
 	color: pink;
 }

@@ -3,8 +3,6 @@ import { User } from "../db/user";
 import { getEmptyUserInfo, UserInfo } from "../types/user_info";
 import { randomUUID } from 'crypto';
 import sha256 from 'sha256';
-import query from "../db/db";
-import { getEmptyUserStats, UserStats } from "../db/user_stats";
 
 type UserContextType = {
 	userInfo: UserInfo | null,

@@ -2,13 +2,16 @@ import styles from '@/styles/modules/user.module.css';
 import index_styles from '@/styles/modules/index.module.css';
 
 import { getEmptyUserInfo, UserInfo } from '@/lib/types/user_info';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { InitUserContext } from '@/lib/contexts/user_context';
-import Score, { ScoreFull } from '@/lib/types/score';
+import { Grades, ScoreFull, ScoreGrade } from '@/lib/types/score';
 import ScoreThumb from './score_thumb';
+import GradeDisplay from './grade_display';
 
 export default function User({ osu_id }: {osu_id: number}) {
 	const [userInfo, setUserInfo] = useState<UserInfo | null>(getEmptyUserInfo());
+
+	const grades_hidden: ScoreGrade[] = ['B','C','D','F'];
 
 	const [bestScores, setBestScores] = useState<ScoreFull[]>([]);
 	const bPage = 0;
@@ -22,7 +25,7 @@ export default function User({ osu_id }: {osu_id: number}) {
 	const recentPage = useRef({rPage}).current;
 	const nextRecent = useRef({hasNextRecent}).current;
 
-	function addBestScores() {
+	const addBestScores = useCallback(() => {
 		if(!userInfo  || userInfo.osu_id < 0) return;
 		if(!nextBest.hasNextBest) return;
 
@@ -34,9 +37,9 @@ export default function User({ osu_id }: {osu_id: number}) {
 
 			data.json().then((scores: ScoreFull[]) => setBestScores(bestScores => [...bestScores, ...scores]))
 		});
-	}
+	}, [bestPage.bPage, nextBest, userInfo]);
 
-	function addRecentScores() {
+	const addRecentScores = useCallback(() => {
 		if(!userInfo  || userInfo.osu_id < 0) return;
 		if(!nextRecent.hasNextRecent) return;
 
@@ -48,18 +51,18 @@ export default function User({ osu_id }: {osu_id: number}) {
 
 			data.json().then((scores: ScoreFull[]) => setRecentScores(recentScores => [...recentScores, ...scores]))
 		});
-	}
+	}, [nextRecent, recentPage.rPage, userInfo]);
 
 	useEffect(() => {
 		if(osu_id !== undefined) {
 			InitUserContext(setUserInfo, osu_id);
 		}
-	}, []);
+	}, [osu_id]);
 
 	useEffect(() => {
 		addBestScores();
 		addRecentScores();
-	}, [userInfo]);
+	}, [addBestScores, addRecentScores, userInfo]);
 
 	return (<>
 		{
@@ -76,7 +79,7 @@ export default function User({ osu_id }: {osu_id: number}) {
 					<div className={styles.user_page}>
 						<div className={styles.user_head}>{`${userInfo.username}'`}s profile</div>
 						<div className={styles.user_bloc_info}>
-							<img className={styles.user_picture} src={userInfo?.profile_picture}/>
+							<img className={styles.user_picture} src={userInfo?.profile_picture} alt={userInfo.username}/>
 							{
 								userInfo.user_stats &&
 								<div className={styles.user_stats}>
@@ -84,6 +87,18 @@ export default function User({ osu_id }: {osu_id: number}) {
 									<div className={styles.user_stats_loss}>{userInfo.user_stats.losses} wrongs</div>
 								</div>	
 							}						
+						</div>
+						<div className={styles.user_bloc_grades}>
+							{
+								Grades.map(grade => {
+									if(grades_hidden.includes(grade) || !userInfo.user_stats) return;
+									return <GradeDisplay
+										key={grade}
+										grade={grade}
+										count={userInfo.user_stats[`grades_${grade}`]}
+									/>
+								})
+							}
 						</div>
 						<div className={styles.user_bloc_bests}>
 							<div className={styles.user_bloc_title}>Best scores</div>

@@ -1,3 +1,3 @@
 export interface OsuEndpoint {
-	call(...args: any): any
+	call(...args: object[] | number[]): object | number
 }

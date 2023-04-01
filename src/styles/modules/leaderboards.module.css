@@ -1,0 +1,100 @@
+.leaderboards_container {
+	width: 90%;
+	margin: 2.5vh auto 0;
+}
+
+.leaderboards {
+	display: flex;
+	flex-direction: column;
+}
+
+.leaderboard_head,
+.leaderboards > div {
+	display: flex;
+	justify-content: space-between;
+
+	border: 1px solid rgba(0,0,0,.2);
+	padding: 5px;
+	margin: 2px;
+	height: 4vh;
+}
+.leaderboard_head {
+	background: rgba(0,0,0,.3);
+}
+.leaderboards > div {
+	background: rgba(0,0,0,.2);
+	border-radius: 5px;
+}
+
+.leaderboard_head > div,
+.leaderboards > div > div {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.lb_rank, .user_rank {
+	width: 5%;
+}
+
+.lb_name, .user {
+	width: 40%;
+}
+
+.lb_wins, .user_wins,
+.lb_losses, .user_losses {
+	width: 12.5%;
+}
+
+.lb_grades_x, .user_grades_x,
+.lb_grades_ss, .user_grades_ss,
+.lb_grades_s, .user_grades_s {
+	width: 10%;
+}
+
+.lb_grades_x > img,
+.lb_grades_ss > img,
+.lb_grades_s > img {
+	height: 3.5vh;
+}
+
+.user_wins {
+	color: rgba(0,255,0,.75);
+}
+
+.user_losses {
+	color: rgba(255,0,0,.75);
+}
+
+.user_grades_x {
+	color: #b7b7b7;
+}
+
+.user_grades_ss {
+	color: #ffa713;
+}
+
+.user_grades_s {
+	color: #ff662b;
+}
+
+.user {
+	display: flex;
+	align-items: center;
+	justify-content: left!important;
+}
+
+.user > img {
+	width: 5vh;
+	aspect-ratio: 1;
+	border-radius: 10px;
+	border: 1px solid rgba(0,0,0,.5);
+	background: rgba(0,0,0,.5);
+}
+
+.user_name {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding-left: 5px;
+}

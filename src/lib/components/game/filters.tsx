@@ -1,13 +1,16 @@
+import styles from '@/styles/modules/filters.module.css';
+
+import { useContext, useEffect, useState } from 'react';
+
 import { FiltersContext } from '@/lib/contexts/filters_context';
 import { isFilterRanked } from '@/lib/types/next_song_params';
-import styles from '@/styles/modules/filters.module.css';
-import { useContext, useEffect, useState } from 'react';
-import Button from './button';
+
+import Button from '../ui/button';
 import Filter from './filter_select';
-import IconText from './icon_text';
+import IconText from '../ui/icon_text';
 
 export default function Filters() {
-	const {songFilters, setSongFilters} = useContext(FiltersContext);
+	const {songFilters, } = useContext(FiltersContext);
 	const [open, setOpen] = useState(false);
 	const [nb_results, setNbResults] = useState(0);
 	const [filters_ranked, setFiltersRanked] = useState(true);

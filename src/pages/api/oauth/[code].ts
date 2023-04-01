@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { ApiError, InvalidOauth, InvalidOsuUser } from '@/lib/types/api_error';
-import { getEmptyUserInfo, UserInfo } from '@/lib/types/user_info';
+import { UserInfo } from '@/lib/types/user_info';
 import { OsuApiToken } from '@/lib/osu_api/token';
 import { CreateOrRefreshUserToken, User } from '@/lib/db/user';
 import { OsuApiMe } from '@/lib/osu_api/me';
@@ -41,10 +41,10 @@ export default async function handler(
 			}
 
 			res.status(200).json(userInfo);
-		}).catch((data) => {
+		}).catch(() => {
 			res.status(404).json(InvalidOsuUser);
 		})
-	}).catch((data) => {
+	}).catch(() => {
 		res.status(404).json(InvalidOauth);
 	});
 }

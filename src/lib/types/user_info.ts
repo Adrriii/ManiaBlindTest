@@ -1,12 +1,12 @@
 import { checkUserCookie } from '../contexts/user_context';
 import { getUserFromOsuId, User } from '../db/user';
-import { getEmptyUserStats, getUserStats, UserStats } from '../db/user_stats';
+import { getUserStats, UserStats } from '../db/user_stats';
 
 export type UserInfo = {
 	osu_id: number,
 	username: string,
 	profile_picture: string,
-	user_stats?: UserStats
+	user_stats?: UserStats,
 }
 
 export function fromUser(user: User): UserInfo {

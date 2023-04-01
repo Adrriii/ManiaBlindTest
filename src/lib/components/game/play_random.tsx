@@ -1,21 +1,28 @@
-import { FiltersContext } from '@/lib/contexts/filters_context';
-import { NextSongParams, SongFilters, getEmptySongFilters } from '@/lib/types/next_song_params';
-import styles from '@/styles/modules/play_random.module.css'
+import styles from '@/styles/modules/play_random.module.css';
+
 import { RequestInit } from 'next/dist/server/web/spec-extension/request';
-import { useCallback, useContext, useEffect, useState } from 'react';
-import Select from 'react-select';
-import { GameContext } from '../../lib/contexts/game_context';
-import { GameInfo, getEmptyGameInfo } from '../../lib/types/game_info';
-import Button from './button';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+
+import { FiltersContext } from '@/lib/contexts/filters_context';
+import { GameContext } from '../../contexts/game_context';
+import { NextSongParams, SongFilters, getEmptySongFilters } from '@/lib/types/next_song_params';
+import { GameInfo } from '../../types/game_info';
+
+import Button from '../ui/button';
 import Filters from './filters';
-import IconText from './icon_text';
+import IconText from '../ui/icon_text';
+import { ApiError } from 'next/dist/server/api-utils';
 
 export default function PlayRandom() {
 	const {gameInfo, setGameInfo} = useContext(GameContext);
+	const gameInfoRef = useRef({gameInfo});
 	const [volume, setVolume] = useState(0.5);
 	const [isPlaying, setIsPlaying] = useState(false);
+	const isPlayingRef = useRef({isPlaying});
 	const [isPaused, setIsPaused] = useState(false);
 	const [givingUp, setGiveUp] = useState(false);
+	const givingUpRef = useRef({givingUp});
+	const [givenUp, setGivenUp] = useState(false);
 	
 	const [songFilters, setSongFilters] = useState<SongFilters>(getEmptySongFilters());
 	const filtersContext = {songFilters, setSongFilters};
@@ -28,28 +35,18 @@ export default function PlayRandom() {
 
 	const [pressed, setPressed] = useState<{[keys: string]: boolean}>({});
 
-	useEffect(() => {
-		if(isPlaying && pressed['Alt'] && pressed['*']) {
-			if(gameInfo.over) {
-				next();
-			} else {
-				giveUp();
-			}
-		}
-	}, [pressed]);
-
 	const handleKeyPress = useCallback((event: { key:  string; }) => {
 		setPressed(pressed => ({
 			...pressed,
 			[event.key]: true
 		}));
-	}, [pressed]);	
+	}, []);	
 	const handleKeyUp = useCallback((event: { key: string; }) => {
 		setPressed(pressed => ({
 			...pressed,
 			[event.key]: false
 		}));
-	}, [pressed]);
+	}, []);
 
 	useEffect(() => {
 		document.addEventListener('keydown', handleKeyPress);
@@ -59,9 +56,10 @@ export default function PlayRandom() {
 			document.removeEventListener('keydown', handleKeyPress);
 			document.removeEventListener('keyup', handleKeyUp);
 		};
-	}, []);
+	}, [handleKeyPress, handleKeyUp]);
 
 	useEffect(() => {
+		gameInfoRef.current.gameInfo = gameInfo;
 		if(gameInfo.id && getPlayer().src !== gameInfo.song_uri) {
 			getPlayer().src = gameInfo.song_uri;
 			getPlayer().play();
@@ -75,7 +73,7 @@ export default function PlayRandom() {
 		return document.getElementById('player') as HTMLAudioElement;
 	}
 	
-	function playRandom() {
+	const playRandom = useCallback(() => {
 		const params: NextSongParams = {
 			filters: songFilters
 		}
@@ -87,14 +85,15 @@ export default function PlayRandom() {
 		fetch('/api/next_song', opts).then((data: Response) => {
 			data.json().then((game: GameInfo) => {
 				setGameInfo(game);
+				setGivenUp(false);
 			});
 		});
-	}
+	}, [setGameInfo, songFilters]);
 	
-	function pause() {
+	const pause = useCallback(() => {
 		getPlayer().pause();
 		setIsPaused(true);
-	}
+	}, []);
 	
 	function resume() {
 		getPlayer().play();
@@ -106,10 +105,12 @@ export default function PlayRandom() {
 	}
 
 	useEffect(() => {
-		if(!gameInfo.id) return;
-		fetch(`/api/next_hint/${gameInfo.id}`).then((data: Response) => {
-			data.json().then((game: any) => {
-				if(game.error) {
+		givingUpRef.current.givingUp = givingUp;
+
+		if(!gameInfoRef.current.gameInfo.id) return;
+		fetch(`/api/next_hint/${gameInfoRef.current.gameInfo.id}`).then((data: Response) => {
+			data.json().then((game: GameInfo | ApiError) => {
+				if(game instanceof ApiError) {
 					return;
 				}
 				setGameInfo(game as GameInfo);
@@ -119,21 +120,36 @@ export default function PlayRandom() {
 				}
 			});
 		});
-	}, [givingUp]);
+	}, [givingUp, setGameInfo]);
 
-	async function giveUp() {
-		setGiveUp(!givingUp);
-	}
+	const giveUp = useCallback(() => {
+		setGivenUp(true);
+		setGiveUp(!givingUpRef.current.givingUp);
+	}, []);
 
-	function next() {
+	const next = useCallback(() => {
 		pause();
 		playRandom();
-	}
+	}, [pause, playRandom]);
 
 	function handleVolumeChange(volume: number) {
 		setVolume(volume);
 		getPlayer().volume = volume;
 	}
+
+	useEffect(() => {
+		isPlayingRef.current.isPlaying = isPlaying;
+	}, [isPlaying]);
+
+	useEffect(() => {
+		if(isPlayingRef.current.isPlaying && pressed['Alt'] && pressed['*']) {
+			if(gameInfoRef.current.gameInfo.over) {
+				next();
+			} else {
+				giveUp();
+			}
+		}
+	}, [pressed, giveUp, next]);
 
 	return (<>
 		<div className={styles.play_random}>
@@ -169,7 +185,7 @@ export default function PlayRandom() {
 				}
 				{ isPlaying && !gameInfo.over &&
 					<Button button={
-						<button onClick={giveUp}>
+						<button onClick={giveUp} disabled={givenUp}>
 							<IconText icon={'stop'} text={'Give Up'}></IconText>
 						</button>
 					}></Button>

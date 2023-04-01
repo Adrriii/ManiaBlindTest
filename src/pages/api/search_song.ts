@@ -1,4 +1,3 @@
-import { Mapset } from '@/lib/db/beatmap';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import mapsets from '@/lib/memory/mapsets';
 import { getEmptySearchResults, SearchResults } from '@/lib/types/search_results';
@@ -35,7 +34,24 @@ export default async function handler(
 		return mapsets.some((set) => songEqual(set, mapset));
 	}
 	
+	// find exact matches
 	mapsets.search_base.forEach((song, ) => {
+		if(results.titles.length >= cat_limit && results.artists.length >= cat_limit) return;
+		if(checkSameSong(results.titles, song)) return;
+		if(checkSameSong(results.artists, song)) return;
+		if(results.titles.length < cat_limit && wordEqual(search, song.title)) {
+			results.titles.push(song);
+			return;
+		}
+		if(results.artists.length < cat_limit && wordEqual(search, song.artist)) {
+			results.artists.push(song);
+			return;
+		}
+	});
+	
+	// find more if theres room
+	mapsets.search_base.forEach((song, ) => {
+		if(results.titles.length >= cat_limit && results.artists.length >= cat_limit) return;
 		if(checkSameSong(results.titles, song)) return;
 		if(checkSameSong(results.artists, song)) return;
 		if(results.titles.length < cat_limit && wordMatch(search, song.title)) {
@@ -46,7 +62,7 @@ export default async function handler(
 			results.artists.push(song);
 			return;
 		}
-	})
+	});
 
 	res.status(200).json(results);
 }

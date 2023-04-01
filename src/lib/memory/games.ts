@@ -10,9 +10,9 @@ import { isFilterRanked, NextSongParams, SongFilters } from "../types/next_song_
 import { HintCreator } from "../types/hints";
 import moment from "moment";
 import Score from "../types/score";
-import { addUserLoss, addUserWin } from '../db/user_stats';
+import { addUserLoss, addUserWin, changeUserGradeBy } from '../db/user_stats';
 import { UserInfo } from "../types/user_info";
-import { addUserScore, getUserScore, reRankSongScores } from "../db/user_score";
+import { addUserScore, getUserScore, UserScore } from "../db/user_score";
 
 type FilteredQuery = {query: string, values: string[]};
 
@@ -73,7 +73,6 @@ export class Games {
 		serverGame.game.guess_mapset = game.guess_mapset;
 		serverGame.game.guess_song = game.guess_song;
 		game = serverGame.game;
-		game.answer = serverGame.answer.song;
 
 		game.guesses_used++;
 
@@ -89,40 +88,62 @@ export class Games {
 
 				await getUserScore(userInfo.osu_id, serverGame.answer.song.hash_id).then(async (score) => {
 					let with_replace = true;
+					game.score = Score.computeScore(game);
+
 					if(score) {
 						if(score.score > game.score) with_replace = false;
 						if(score.score === game.score && score.time_ms <= game_time) with_replace = false;
 					}
-					await addUserScore({
+					
+					const serverScore: UserScore = {
 						osu_id: userInfo.osu_id,
 						hash_id: serverGame.answer.song.hash_id,
 						beatmapset_id: serverGame.answer.song.beatmapset_id,
-						score: Score.computeScore(game),
+						score: game.score,
 						hints_used: game.hints_used,
-						time_ms: game_time
-					}, with_replace);
+						time_ms: game_time,
+						score_date: -1
+					};
+					await addUserScore(serverScore, with_replace);
+					if(with_replace) {
+						await changeUserGradeBy(userInfo.osu_id, Score.getScoreGrade(serverScore), 1);
+
+						if(score) {
+							await changeUserGradeBy(userInfo.osu_id, Score.getScoreGrade(score), -1);
+						}
+					}
 				})
 			}
 		} else {
 			game.win = false;
-			await addUserLoss(userInfo.osu_id);
-			await addUserScore({
-				osu_id: userInfo.osu_id,
-				hash_id: serverGame.answer.song.hash_id,
-				beatmapset_id: serverGame.answer.song.beatmapset_id,
-				score: 0,
-				hints_used: game.hints_used,
-				time_ms: 0
-			}, false);
+			if(userInfo.osu_id > 0 && isFilterRanked(game.filters)) {
+				await addUserLoss(userInfo.osu_id);
+				await addUserScore({
+					osu_id: userInfo.osu_id,
+					hash_id: serverGame.answer.song.hash_id,
+					beatmapset_id: serverGame.answer.song.beatmapset_id,
+					score: 0,
+					hints_used: game.hints_used,
+					time_ms: 0
+				}, false);
+			}
 		}
 
 		return game;
 	}
 
 	gameOver(game: GameInfo): void {
+		const serverGame = games.getGame(game.id);
+
+		if(serverGame === null) {
+			return;
+		}
+
 		game.over = true;
 		game.end_time = moment.now();
 		game.score = Score.computeScore(game);
+		game.answer = serverGame.answer.song;
+		
 		this.games.delete(game.id);
 	}
 	

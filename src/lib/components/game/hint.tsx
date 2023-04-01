@@ -1,18 +1,20 @@
 import styles from '@/styles/modules/hint.module.css'
-import btn_style from '@/styles/modules/button.module.css'
+
 import moment from 'moment';
+
 import { useContext, useEffect, useRef, useState } from 'react';
-import { GameContext } from '../../lib/contexts/game_context';
-import { GameInfo } from '../../lib/types/game_info';
-import Button from './button';
-import IconText from './icon_text';
+import { GameContext } from '../../contexts/game_context';
+import { GameInfo } from '../../types/game_info';
+
+import Button from '../ui/button';
+import IconText from '../ui/icon_text';
 import Guess from './guess';
 import GuessButton from './guess_button';
 
 export default function Hint() {
 	const {gameInfo, setGameInfo} = useContext(GameContext);
 	const [currentTime, setCurrentTime] = useState<number>(0);
-	const [duration, setDuration] = useState<number>(0);
+	const [, setDuration] = useState<number>(0);
 	const [progressRefresher, setProgressRefresher] = useState<NodeJS.Timer | null>(null);
 	const prevRefresher = useRef({progressRefresher}).current;
 
@@ -71,7 +73,7 @@ export default function Hint() {
 		return () => {
 			prevRefresher.progressRefresher = progressRefresher
 		}
-	}, [progressRefresher])
+	}, [prevRefresher, progressRefresher])
 
 	function nextHint(): void {
 		if(!gameInfo.id) return;
@@ -94,6 +96,7 @@ export default function Hint() {
 				<div className={styles.hint_banner_container}>
 					<div className={styles.hint_banner}>
 						<img 
+							alt='hint background'
 							className={gameInfo.hints?.banner_url ? '' : styles.unknown}
 							src={gameInfo.hints?.banner_url ? gameInfo.hints.banner_url : unknown_banner}
 						/>

@@ -19,7 +19,8 @@ export type ScoreFull = {
 	song: Song
 }
 
-export type ScoreGrade = 'X' | 'SS' | 'S' | 'A' | 'B' | 'C' | 'D' | 'F';
+export const Grades = ['X', 'SS', 'S', 'A', 'B', 'C', 'D', 'F'] as const;
+export type ScoreGrade = typeof Grades[number];
 
 export default class Score {
 

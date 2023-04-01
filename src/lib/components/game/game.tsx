@@ -3,8 +3,8 @@ import index_styles from '@/styles/modules/index.module.css';
 
 import { UserContext } from '@/lib/contexts/user_context';
 import { useContext, useState } from 'react';
-import { GameContext } from '../../lib/contexts/game_context';
-import { GameInfo, getEmptyGameInfo } from '../../lib/types/game_info';
+import { GameContext } from '../../contexts/game_context';
+import { GameInfo, getEmptyGameInfo } from '../../types/game_info';
 
 import Hint from './hint';
 import PlayRandom from './play_random';
@@ -12,7 +12,7 @@ import Result from './result';
 import Score from './score';
 
 export default function Game() {
-	const {userInfo, setUserInfo} = useContext(UserContext);
+	const {userInfo, } = useContext(UserContext);
 	const [gameInfo, setGameInfo] = useState<GameInfo>(getEmptyGameInfo());
 	const gameContext = {gameInfo, setGameInfo};
 

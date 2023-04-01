@@ -16,7 +16,7 @@ export default function ScoreThumb({ score_full, mode, hide_first }: ScoreThumbP
 					(mode === 'user' && score_full.score.rank) &&
 					<div className={styles.score_rank}>{`#${score_full.score.rank}`}</div>
 				}
-				<div className={styles.score_grade}><img src={`/grades/${Score.getScoreGrade(score_full.score)}.png`}/></div>
+				<div className={styles.score_grade}><img src={`/grades/${Score.getScoreGrade(score_full.score)}.png`} alt={Score.getScoreGrade(score_full.score)}/></div>
 				{
 					mode === 'song' &&
 					<div className={styles.score_song}>{score_full.song.artist} - {score_full.song.title}</div>

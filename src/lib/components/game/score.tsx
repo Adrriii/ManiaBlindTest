@@ -2,12 +2,11 @@ import styles from '@/styles/modules/score.module.css';
 import { useContext, useEffect, useRef, useState } from 'react';
 import ScoreLib from '@/lib/types/score';
 import { GameContext } from '@/lib/contexts/game_context';
-import { ScoresResponse } from '../api/mapset/[hash_id]/scores';
-import ScoreThumb from './score_thumb';
-import { userInfo } from 'os';
+import { ScoresResponse } from '../../../pages/api/mapset/[hash_id]/scores';
+import ScoreThumb from '../user/score_thumb';
 
 export default function Score() {
-	const {gameInfo, setGameInfo} = useContext(GameContext);
+	const {gameInfo, } = useContext(GameContext);
 	const [score, setScore] = useState(ScoreLib.computeScore(gameInfo));
 	const [scores, setScores] = useState<ScoresResponse | null>(null);
 	const once = useRef(false);

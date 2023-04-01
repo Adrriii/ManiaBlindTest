@@ -1,4 +1,7 @@
+import { Grades } from "../types/score";
+import { UserInfo } from "../types/user_info";
 import query from "./db"
+import { UserStats } from "./user_stats";
 
 export type User = {
 	osu_id: number,
@@ -24,4 +27,13 @@ export async function getUserFromOsuId(osu_id: number) {
 	const values = [osu_id.toString()];
 
 	return (await query('SELECT * FROM user WHERE osu_id = ?', values, 'blindtest') as User[])[0];
+}
+
+export async function getTopUsers(page = 1): Promise<(UserInfo & UserStats)[]> {
+	const limit = 50;
+	const offset = (page - 1) * limit;
+
+	const grades_desc = Grades.map(grade => ` grades_${grade} DESC`);
+
+	return await query(`SELECT * FROM user u, user_stats s WHERE u.osu_id = s.osu_id ORDER BY wins DESC, ${grades_desc} LIMIT ${limit} OFFSET ${offset}`, [], 'blindtest') as (UserInfo & UserStats)[];
 }

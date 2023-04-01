@@ -1,4 +1,3 @@
-import { Mapset } from "../db/beatmap";
 import { Song } from "../db/song";
 
 export type SearchResults = {
