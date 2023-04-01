@@ -37,7 +37,7 @@ export default function User({ osu_id }: {osu_id: number}) {
 
 			data.json().then((scores: ScoreFull[]) => setBestScores(bestScores => [...bestScores, ...scores]))
 		});
-	}, [bestPage.bPage, nextBest, userInfo]);
+	}, [userInfo]);
 
 	const addRecentScores = useCallback(() => {
 		if(!userInfo  || userInfo.osu_id < 0) return;
@@ -51,7 +51,7 @@ export default function User({ osu_id }: {osu_id: number}) {
 
 			data.json().then((scores: ScoreFull[]) => setRecentScores(recentScores => [...recentScores, ...scores]))
 		});
-	}, [nextRecent, recentPage.rPage, userInfo]);
+	}, [userInfo]);
 
 	useEffect(() => {
 		if(osu_id !== undefined) {

@@ -10,6 +10,10 @@ type UserThumbProps = {
 };
 export default function UserThumb({ userInfo, userStats, rank }: UserThumbProps) {
 
+	function goToUser(osu_id: number) {
+		window.location.href = `/user/${osu_id}`;
+	}
+
 	return (<>
 		{
 			userInfo &&
@@ -20,7 +24,7 @@ export default function UserThumb({ userInfo, userStats, rank }: UserThumbProps)
 						alt={userInfo.username}
 						src={userInfo.profile_picture}
 					/>
-					<div className={styles.user_name}>{userInfo.username}</div>
+					<div className={styles.user_name} onClick={() => goToUser(userInfo.osu_id)}>{userInfo.username}</div>
 				</div>
 				<div className={styles.user_wins}>{userStats.wins}</div>
 				<div className={styles.user_losses}>{userStats.losses}</div>

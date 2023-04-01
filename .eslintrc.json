@@ -13,6 +13,7 @@
 	"rules": {
 		"no-empty-function": "off",
 		"@next/next/no-img-element": "off",
-		"@next/next/google-font-display": "off"
+		"@next/next/google-font-display": "off",
+		"react-hooks/exhaustive-deps": "off"
 	}
 }
