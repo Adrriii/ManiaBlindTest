@@ -184,6 +184,7 @@ export default function Guess() {
 			<input 
 				placeholder='Search for a title, an artist...'
 				id={search_id} type='text'
+				autoComplete="off"
 				value-mapset={gameInfo.guess_mapset}
 				onChange={updateSearch}
 				onClick={focusText}>

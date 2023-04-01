@@ -67,7 +67,7 @@ export default function Score() {
 				scores &&
 				<div className={styles.leaderboard}>
 					{
-						scores.scores.map(score_full =>
+						scores.scores.reverse().map(score_full =>
 							<ScoreThumb 
 								key={score_full.user.osu_id}
 								score_full={score_full}
