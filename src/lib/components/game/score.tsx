@@ -67,7 +67,7 @@ export default function Score() {
 				scores &&
 				<div className={styles.leaderboard}>
 					{
-						scores.scores.sort((a, b) => (b.score.rank as number) - (a.score.rank as number)).map(score_full =>
+						scores.scores.sort((a, b) => (a.score.rank as number) - (b.score.rank as number)).map(score_full =>
 							<ScoreThumb 
 								key={score_full.user.osu_id}
 								score_full={score_full}
