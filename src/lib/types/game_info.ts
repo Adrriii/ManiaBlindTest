@@ -2,6 +2,7 @@ import { Song } from "../db/song";
 import { ServerSong } from "../memory/server_song";
 import { Hints } from "./hints";
 import { getEmptyNextSongParams, getEmptySongFilters, NextSongParams, SongFilters } from "./next_song_params";
+import { getEmptyUserInfo, UserInfo } from "./user_info";
 
 export type GameId = string;
 
@@ -26,6 +27,7 @@ export type GameInfo = {
 	end_time: number,
 	score: number,
 	filters: SongFilters,
+	player: UserInfo,
 	answer?: Song,
 }
 
@@ -52,6 +54,7 @@ export function getEmptyGameInfo(): GameInfo {
 		start_time: -1,
 		end_time: -1,
 		score: -1,
+		player: getEmptyUserInfo(),
 		filters: getEmptySongFilters()
 	};
 }

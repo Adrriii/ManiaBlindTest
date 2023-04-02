@@ -10,7 +10,7 @@ import { isFilterRanked, NextSongParams, SongFilters } from "../types/next_song_
 import { HintCreator } from "../types/hints";
 import moment from "moment";
 import Score from "../types/score";
-import { addUserLoss, addUserWin, changeUserGradeBy } from '../db/user_stats';
+import { addUserLoss, addUserPlay, addUserWin, changeUserGradeBy } from '../db/user_stats';
 import { UserInfo } from "../types/user_info";
 import { addUserScore, getUserScore, UserScore } from "../db/user_score";
 
@@ -29,7 +29,7 @@ export class Games {
 		return this.games.has(id) ? this.games.get(id) as ServerGame : null;
 	}
 
-	async newGame(params: NextSongParams): Promise<GameInfo> {
+	async newGame(params: NextSongParams, player: UserInfo): Promise<GameInfo> {
 		const game = getEmptyGameInfo();
 		let song: Song;
 		let someMapset: Mapset | undefined = undefined;
@@ -49,6 +49,7 @@ export class Games {
 			someMapset = serverSong.getSome();
 		} while(serverSong === undefined || someMapset === undefined)
 		
+		game.player = player;
 		game.song_uri = `${process.env.SONG_URI}/games/${game.id}/${game.id}.mp3`;
 		game.song_length = someMapset.total_length as number;
 		game.params = params;
@@ -59,6 +60,10 @@ export class Games {
 			game: game,
 			answer: serverSong
 		});
+
+		if(game.player.osu_id > 0) {
+			addUserPlay(game.player.osu_id);
+		}
 
 		return game;
 	}

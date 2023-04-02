@@ -3,6 +3,7 @@ import query from "./db"
 
 export type UserStats = {
 	osu_id: number,
+	plays: number,
 	wins: number,
 	losses: number,
 	grades_X: number,
@@ -28,6 +29,10 @@ export async function addUserLoss(osu_id: number) {
 	query('UPDATE user_stats SET losses = losses + 1 WHERE osu_id = ?', [osu_id.toString()], 'blindtest');
 }
 
+export async function addUserPlay(osu_id: number) {
+	query('UPDATE user_stats SET plays = plays + 1 WHERE osu_id = ?', [osu_id.toString()], 'blindtest');
+}
+
 export async function changeUserGradeBy(osu_id: number, grade: ScoreGrade, amount: number) {
 	const grade_db = `grades_${grade}`;
 	
@@ -37,6 +42,7 @@ export async function changeUserGradeBy(osu_id: number, grade: ScoreGrade, amoun
 export function getEmptyUserStats(): UserStats {
 	return {
 		osu_id: -1,
+		plays: -1,
 		wins: -1,
 		losses: -1,
 		grades_X: -1,
