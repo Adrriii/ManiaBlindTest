@@ -78,7 +78,7 @@ export default function CompletionGraph({ osu_id }: CompletionGraphProps) {
 		margin: {
 			t: 0,
 			b: 30,
-			l: 50,
+			l: 60,
 			r: 0
 		},
 		yaxis: {
