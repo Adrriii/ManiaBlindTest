@@ -30,7 +30,29 @@
 	right:0;
 	margin: 3%;
 	background: rgba(0,0,0,.5);
-	padding: 4vh;
+	padding: 1vh;
 	border-radius: 20px;
 	border: 1px solid rgba(0,0,0,.75);
+}
+.volume_controller > input {
+	width: 100%;
+}
+.keybinds {
+	font-size: 75%;
+	display: flex;
+	flex-direction: column;
+}
+
+.keybinds > div {
+	display: flex;
+	justify-content: space-between;
+	flex-grow: 100;
+	width: 25vh;
+}
+
+.keybinds code {
+	background: rgba(37, 37, 37, 0.5);
+	padding: 5px;
+	border-radius: 5px;
+	font-size: 75%;
 }

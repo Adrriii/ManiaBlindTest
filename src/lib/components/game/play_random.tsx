@@ -203,6 +203,11 @@ export default function PlayRandom() {
 						handleVolumeChange(event.target.valueAsNumber)
 					}}
 				/>
+				<div className={styles.keybinds}>
+					<div><div>Give Up / Next</div>	<div> <code>Alt</code> + <code>*</code></div></div>
+					<div><div>Selection</div>		<div> <code>Up</code> / <code>Down</code></div></div>
+					<div><div>Select / Guess</div>	<div> <code>Enter</code></div></div>
+				</div>
 			</div>
 
 			<FiltersContext.Provider value={filtersContext}>
