@@ -44,7 +44,7 @@ export default class Score {
 		return Math.max(score, 0);
 	}
 
-	static getScoreGrade(score: UserScore): ScoreGrade {
+	static getScoreGrade(score: Pick<UserScore, 'score' | 'hints_used'>): ScoreGrade {
 		if(score.score === 1000000) return 'X';
 		if(score.score >= 990000) return 'SS';
 		if(score.score >= 950000) return 'S';

@@ -117,3 +117,16 @@
 	font-size: 3vh;
 	padding-top: 1vh;
 }
+
+.completion_graph {
+	height: 40vh;
+	width: 100%;
+}
+
+.completion_graph > div,
+.completion_graph .plot-container {
+	height: 100%;
+	width: 100%;
+
+	color: #ff9900;
+}

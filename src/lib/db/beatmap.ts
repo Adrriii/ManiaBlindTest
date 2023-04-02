@@ -26,3 +26,11 @@ export type Beatmap = {
 	version: string,
 	approved: number
 }
+
+export type SongBeatmap = {
+	beatmap_id: number,
+	beatmapset_id: number,
+	hash_id: string,
+	difficultyrating: number,
+	approved_date: string,
+}

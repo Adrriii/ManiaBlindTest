@@ -1,4 +1,4 @@
-import { ScoreFull } from "../types/score";
+import Score, { ScoreFull, ScoreGrade } from "../types/score";
 import { fromUser, UserInfo } from "../types/user_info";
 import query, { transaction } from "./db"
 import { getSongFromHashId } from "./song";
@@ -12,7 +12,8 @@ export type UserScore = {
 	score: number,
 	hints_used: number,
 	time_ms: number,
-	rank?: number
+	rank?: number,
+	grade: ScoreGrade
 }
 
 const score_order = 'ORDER BY score DESC, time_ms ASC, hints_used ASC, score_date ASC';
@@ -25,8 +26,9 @@ export async function addUserScore(userScore: Omit<UserScore, 'score_date'>, wit
 		userScore.score.toString(),
 		userScore.hints_used.toString(),
 		userScore.time_ms.toString(),
+		Score.getScoreGrade(userScore)
 	];
-	const base_query = '(osu_id, hash_id, beatmapset_id, score, hints_used, time_ms) VALUES (?,?,?,?,?,?)';
+	const base_query = '(osu_id, hash_id, beatmapset_id, score, hints_used, time_ms, grade) VALUES (?,?,?,?,?,?,?)';
 
 	if(with_replace) {
 		await query(`REPLACE INTO user_score ${base_query}`, values, 'blindtest');
@@ -84,4 +86,36 @@ export async function getFullScore(base_score: UserScore, user: UserInfo | null 
 		user: user ? user : fromUser(await getUserFromOsuId(base_score.osu_id)),
 		song: await getSongFromHashId(base_score.hash_id)
 	}
+}
+
+export type UserCompletion = {
+	yr: number,
+	total: number,
+	scores: number,
+	grades_X: number,
+	grades_SS: number,
+	grades_S: number,
+	grades_A: number,
+	grades_B: number,
+	grades_C: number,
+	grades_D: number,
+};
+
+export async function getUserCompletion(osu_id: number): Promise<UserCompletion[]> {
+	return await 
+		query('SELECT YEAR(b.approved_date) as yr, COUNT(*) as total, COUNT(s.osu_id) as scores \
+		, SUM(IF(s.grade = "X", 1, 0)) as grades_X \
+		, SUM(IF(s.grade = "SS", 1, 0)) as grades_SS \
+		, SUM(IF(s.grade = "S", 1, 0)) as grades_S \
+		, SUM(IF(s.grade = "A", 1, 0)) as grades_A \
+		, SUM(IF(s.grade = "B", 1, 0)) as grades_B \
+		, SUM(IF(s.grade = "C", 1, 0)) as grades_C \
+		, SUM(IF(s.grade = "D", 1, 0)) as grades_D \
+		FROM (SELECT * FROM beatmap GROUP BY beatmapset_id) b \
+		LEFT JOIN user_score s ON b.hash_id = s.hash_id \
+		WHERE (s.osu_id = ? OR s.osu_id is null) AND b.available = 1 \
+		GROUP BY yr HAVING yr > 2006',
+		[osu_id.toString()],
+		'blindtest'
+	) as UserCompletion[];
 }

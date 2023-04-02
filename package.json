@@ -24,16 +24,20 @@
     "moment": "^2.29.4",
     "net": "^1.0.2",
     "next": "13.2.4",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
+    "plotly.js": "^2.20.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-plotly.js": "^2.6.0",
     "react-select": "^5.7.2",
     "react-usestateref": "^1.0.8",
     "serverless-mysql": "^1.5.4",
     "sha256": "^0.2.0",
     "tls": "^0.0.1",
-    "typescript": "5.0.2"
+    "typescript": "^5.0.2"
   },
   "devDependencies": {
+    "@types/plotly.js": "^2.12.18",
+    "@types/react-plotly.js": "^2.6.0",
     "@types/sha256": "^0.2.0"
   }
 }

@@ -7,6 +7,7 @@ import { InitUserContext } from '@/lib/contexts/user_context';
 import { Grades, ScoreFull, ScoreGrade } from '@/lib/types/score';
 import ScoreThumb from './score_thumb';
 import GradeDisplay from './grade_display';
+import CompletionGraph from './completion_graph';
 
 export default function User({ osu_id }: {osu_id: number}) {
 	const [userInfo, setUserInfo] = useState<UserInfo | null>(getEmptyUserInfo());
@@ -88,6 +89,7 @@ export default function User({ osu_id }: {osu_id: number}) {
 								</div>	
 							}						
 						</div>
+						<CompletionGraph osu_id={userInfo.osu_id} />
 						<div className={styles.user_bloc_grades}>
 							{
 								Grades.map(grade => {

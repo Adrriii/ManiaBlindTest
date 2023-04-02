@@ -107,14 +107,17 @@ export class Games {
 						score: game.score,
 						hints_used: game.hints_used,
 						time_ms: game_time,
-						score_date: -1
+						score_date: -1,
+						grade: 'F'
 					};
+					serverScore.grade = Score.getScoreGrade(serverScore);
+
 					await addUserScore(serverScore, with_replace);
 					if(with_replace) {
-						await changeUserGradeBy(userInfo.osu_id, Score.getScoreGrade(serverScore), 1);
+						await changeUserGradeBy(userInfo.osu_id, serverScore.grade, 1);
 
 						if(score) {
-							await changeUserGradeBy(userInfo.osu_id, Score.getScoreGrade(score), -1);
+							await changeUserGradeBy(userInfo.osu_id, score.grade, -1);
 						}
 					}
 				})
@@ -129,7 +132,8 @@ export class Games {
 					beatmapset_id: serverGame.answer.song.beatmapset_id,
 					score: 0,
 					hints_used: game.hints_used,
-					time_ms: 0
+					time_ms: 0,
+					grade: 'F'
 				}, false);
 			}
 		}
