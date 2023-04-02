@@ -1,3 +1,4 @@
 [submodule "ManiaBlindTestBack"]
 	path = src/back
 	url = git@github.com:Adrriii/ManiaBlindTestBack.git
+	branch = master
