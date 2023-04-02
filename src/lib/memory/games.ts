@@ -61,7 +61,7 @@ export class Games {
 			answer: serverSong
 		});
 
-		if(game.player.osu_id > 0) {
+		if(game.player.osu_id > 0 && isFilterRanked(game.filters)) {
 			addUserPlay(game.player.osu_id);
 		}
 
