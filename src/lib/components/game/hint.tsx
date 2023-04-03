@@ -2,7 +2,7 @@ import styles from '@/styles/modules/hint.module.css'
 
 import moment from 'moment';
 
-import { useContext, useEffect, useRef, useState } from 'react';
+import { ReactNode, useContext, useEffect, useRef, useState } from 'react';
 import { GameContext } from '../../contexts/game_context';
 import { GameInfo } from '../../types/game_info';
 
@@ -10,6 +10,50 @@ import Button from '../ui/button';
 import IconText from '../ui/icon_text';
 import Guess from './guess';
 import GuessButton from './guess_button';
+
+function displayDate(date: string): string {
+	return moment(date).format('DD MMMM YYYY');
+}
+
+function getDatesDisplay(gameInfo: GameInfo): ReactNode {
+	return gameInfo.over ? (
+		<div className={styles.hint_info}>
+			{
+				(gameInfo.mapsets && gameInfo.mapsets.length > 0) && gameInfo.mapsets.map<ReactNode>((mapset) => {
+					return <a
+						key={mapset.beatmapset_id}
+						target='_blank'
+						href={`https://osu.ppy.sh/beatmapsets/${mapset.beatmapset_id}#mania`}
+						title='Go to mapset'
+						className={styles.date_link}
+					>{displayDate(mapset.approved_date)}</a>
+				}).reduce((p,c) => [p, ', ', c])
+			}
+		</div>
+	) :(
+		<div className={styles.hint_info}>{gameInfo.hints?.rank_dates.length > 0 ? gameInfo.hints?.rank_dates.map((d) => displayDate(d)).join(', ') : '???'}</div>
+	);
+}
+
+function getPlayer(): HTMLAudioElement {
+	return document.getElementById('player') as HTMLAudioElement;
+}
+
+function getProgressBar(): HTMLDivElement {
+	return document.getElementById('progress_bar') as HTMLDivElement;
+}
+
+function displaySeconds(secs: number): string {
+	const minutes = Math.floor(secs / 60);
+	const seconds = secs % 60;
+
+	let min = minutes.toString();
+	let sec = seconds.toString();
+	if(min.length === 1) min = '0' + min;
+	if(sec.length === 1) sec = '0' + sec;
+
+	return `${min}:${sec}`;
+}
 
 export default function Hint() {
 	const {gameInfo, setGameInfo} = useContext(GameContext);
@@ -19,30 +63,6 @@ export default function Hint() {
 	const prevRefresher = useRef({progressRefresher}).current;
 
 	const unknown_banner = '/unknown.png';
-
-	function getPlayer(): HTMLAudioElement {
-		return document.getElementById('player') as HTMLAudioElement;
-	}
-
-	function getProgressBar(): HTMLDivElement {
-		return document.getElementById('progress_bar') as HTMLDivElement;
-	}
-
-	function displayDate(date: string): string {
-		return moment(date).format('DD MMMM YYYY');
-	}
-
-	function displaySeconds(secs: number): string {
-		const minutes = Math.floor(secs / 60);
-		const seconds = secs % 60;
-
-		let min = minutes.toString();
-		let sec = seconds.toString();
-		if(min.length === 1) min = '0' + min;
-		if(sec.length === 1) sec = '0' + sec;
-
-		return `${min}:${sec}`;
-	}
 
 	// Update song progress bar
 	useEffect(() => {
@@ -111,7 +131,7 @@ export default function Hint() {
 				<div className={styles.hint_info_container}>
 					<div className={addClass(styles.hint_ranked_dates)}>
 						<div className={styles.hint_label}>Ranked date :</div>
-						<div className={styles.hint_info}>{gameInfo.hints?.rank_dates.length > 0 ? gameInfo.hints?.rank_dates.map((d) => displayDate(d)).join(', ') : '???'}</div>
+						{getDatesDisplay(gameInfo)}
 					</div>
 					<div className={addClass(styles.hint_mappers)}>
 						<div className={styles.hint_label}>Mapped by :</div>

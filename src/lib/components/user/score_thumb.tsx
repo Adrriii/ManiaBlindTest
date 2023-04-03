@@ -4,14 +4,15 @@ import styles from '@/styles/modules/score_thumb.module.css';
 type ScoreThumbProps = {
 	score_full: ScoreFull,
 	mode: 'song' | 'user',
-	hide_first?: boolean
+	hide_first?: boolean,
+	highlight?: boolean
 };
-export default function ScoreThumb({ score_full, mode, hide_first }: ScoreThumbProps) {
+export default function ScoreThumb({ score_full, mode, hide_first, highlight }: ScoreThumbProps) {
 
 	return (<>
 		{
 			(score_full && !(hide_first && score_full.score.rank === 1)) &&
-			<div className={styles.score_thumb}>
+			<div className={`${styles.score_thumb} ${highlight ? styles.score_highlight : ''}`}>
 				{
 					(mode === 'user' && score_full.score.rank) &&
 					<div className={styles.score_rank}>{`#${score_full.score.rank}`}</div>

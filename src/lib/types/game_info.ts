@@ -1,3 +1,4 @@
+import { Mapset } from "../db/beatmap";
 import { Song } from "../db/song";
 import { ServerSong } from "../memory/server_song";
 import { Hints } from "./hints";
@@ -29,6 +30,7 @@ export type GameInfo = {
 	filters: SongFilters,
 	player: UserInfo,
 	answer?: Song,
+	mapsets?: Mapset[],
 }
 
 export function getEmptyGameInfo(): GameInfo {

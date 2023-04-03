@@ -23,7 +23,7 @@
 .header_logged {
 	display: flex;
 	align-items: center;
-	padding: 1em;
+	padding: 1em 1em 1em 0em;
 }
 
 .header_login > a {
@@ -36,8 +36,9 @@
 	color: pink;
 }
 
+.header_always > div,
 .header_logged > div {
-	margin: 2vh;
+	margin: 2vh 2vh 2vh 0vh;
 }
 
 .header_profilepicture > img {
@@ -47,7 +48,7 @@
 	object-position: center;
 }
 
-.header_logo:hover, .header_lbs:hover, .header_logout:hover, .header_username:hover, .header_profilepicture:hover {
+.clickable:hover {
 	cursor: pointer;
 	color: pink;
 }

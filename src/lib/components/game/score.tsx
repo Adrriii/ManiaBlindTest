@@ -59,6 +59,7 @@ export default function Score() {
 				<div className={styles.own_score}>
 					<ScoreThumb 
 						score_full={scores.own_score}
+						highlight={true}
 						mode={'user'}
 					/>
 				</div>
@@ -72,6 +73,7 @@ export default function Score() {
 								key={score_full.user.osu_id}
 								score_full={score_full}
 								mode={'user'}
+								highlight={scores.own_score && score_full.user.osu_id === scores.own_score.user.osu_id}
 								hide_first={scores.own_score && scores.own_score.score.rank === 1}
 							/>
 						)

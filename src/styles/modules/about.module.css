@@ -1,0 +1,25 @@
+.about {
+	width: 75%;
+	margin: 3vh auto 3vh;
+
+	background: rgba(0,0,0,.3);
+	border: 1px solid rgba(0,0,0,.4);
+	padding: 5px 20px 5px;
+	border-radius: 10px;
+}
+
+.about section {
+	color: pink;
+	text-decoration: underline;
+}
+
+.about p {
+	margin-bottom: 3vh;
+}
+
+.about a {
+	color: rgb(255, 224, 229);
+}
+.about a:hover {
+	color: pink;
+}

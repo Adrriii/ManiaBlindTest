@@ -152,6 +152,8 @@ export class Games {
 		game.end_time = moment.now();
 		game.score = Score.computeScore(game);
 		game.answer = serverGame.answer.song;
+		console.log(serverGame.answer.mapsets);
+		game.mapsets = Array.from(serverGame.answer.mapsets.values());
 		
 		this.games.delete(game.id);
 	}

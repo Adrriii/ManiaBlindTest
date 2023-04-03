@@ -48,3 +48,7 @@
 	display: flex;
 	justify-content: flex-end;
 }
+
+.score_highlight {
+	color: pink;
+}

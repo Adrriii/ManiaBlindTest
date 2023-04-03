@@ -24,6 +24,10 @@ export default function Header() {
 		window.location.href = `/leaderboards`;
 	}
 
+	function goToAbout() {
+		window.location.href = `/about`;
+	}
+
 	function goToGame() {
 		window.location.href = `/`;
 	}
@@ -35,20 +39,21 @@ export default function Header() {
 			</div>
 			<div className={styles.header_nav}>
 				<div className={styles.header_always}>
-						<div className={styles.header_lbs} onClick={goToLbs}>Leaderboards</div>
+					<div className={`${styles.header_about} ${styles.clickable}`} onClick={goToAbout}>About</div>
+					<div className={`${styles.header_lbs} ${styles.clickable}`} onClick={goToLbs}>Leaderboards</div>
 				</div>
 				{
 					userInfo?.osu_id === -1 &&
-					<div className={styles.header_login}>
+					<div className={`${styles.header_login} ${styles.clickable}`}>
 						<a href={oauth_url}><span>osu!</span> login</a>
 					</div>
 				}
 				{
 					userInfo?.osu_id !== -1 &&
 					<div className={styles.header_logged}>
-						<div className={styles.header_username} onClick={goToProfile}>{userInfo?.username}{(userInfo?.user_stats?.wins !== -1) ? ` (${userInfo?.user_stats?.wins} wins)` : ''}</div>
-						<div className={styles.header_profilepicture} onClick={goToProfile}><img alt='profile picture' src={userInfo?.profile_picture}/></div>
-						<div className={styles.header_logout} onClick={logout}>Logout</div>
+						<div className={`${styles.header_username} ${styles.clickable}`} onClick={goToProfile}>{userInfo?.username}{(userInfo?.user_stats?.wins !== -1) ? ` (${userInfo?.user_stats?.wins} wins)` : ''}</div>
+						<div className={`${styles.header_profilepicture} ${styles.clickable}`} onClick={goToProfile}><img alt='profile picture' src={userInfo?.profile_picture}/></div>
+						<div className={`${styles.header_logout} ${styles.clickable}`} onClick={logout}>Logout</div>
 					</div>
 				}
 			</div>
