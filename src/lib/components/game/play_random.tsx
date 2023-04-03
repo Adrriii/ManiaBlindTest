@@ -29,6 +29,13 @@ export default function PlayRandom() {
 	
 	const search_id = 'guess_search_input';
 
+	useEffect(() => {
+		const uservolume = localStorage.getItem("volume");
+		if(uservolume !== null) {
+			handleVolumeChange(parseFloat(uservolume));
+		}
+	}, []);
+
 	function getSearch(): HTMLInputElement | null {
 		return document.getElementById(search_id) as HTMLInputElement | null;
 	}
@@ -133,6 +140,7 @@ export default function PlayRandom() {
 	}, [pause, playRandom]);
 
 	function handleVolumeChange(volume: number) {
+		localStorage.setItem("volume", volume.toString());
 		setVolume(volume);
 		getPlayer().volume = volume;
 	}
