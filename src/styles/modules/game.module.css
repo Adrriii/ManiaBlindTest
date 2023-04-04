@@ -14,3 +14,22 @@
 	border-radius: 1%;
 	padding: 1%;
 }
+
+.welcome {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	font-size: 110%;
+	margin-bottom: 3vh;
+}
+
+.welcome p {
+	margin: 2vh;
+}
+.ranked {
+	color: rgb(34, 159, 231);
+}
+
+.loved {
+	color: rgb(255, 72, 103);
+}

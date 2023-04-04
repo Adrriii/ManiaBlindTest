@@ -37,6 +37,7 @@ export function getEmptyGameInfo(): GameInfo {
 	return {
 		id: '',
 		hints: {
+			status: -1,
 			banner_url: '',
 			artist: '',
 			mappers: [],

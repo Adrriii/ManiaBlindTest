@@ -1,4 +1,5 @@
-import styles from '@/styles/modules/hint.module.css'
+import game_styles from '@/styles/modules/game.module.css';
+import styles from '@/styles/modules/hint.module.css';
 
 import moment from 'moment';
 
@@ -25,7 +26,7 @@ function getDatesDisplay(gameInfo: GameInfo): ReactNode {
 						target='_blank'
 						href={`https://osu.ppy.sh/beatmapsets/${mapset.beatmapset_id}#mania`}
 						title='Go to mapset'
-						className={styles.date_link}
+						className={`${mapset.approved === 4 ? game_styles.loved : game_styles.ranked} ${styles.date_link}`}
 					>{displayDate(mapset.approved_date)}</a>
 				}).reduce((p,c) => [p, ', ', c])
 			}
@@ -33,6 +34,13 @@ function getDatesDisplay(gameInfo: GameInfo): ReactNode {
 	) :(
 		<div className={styles.hint_info}>{gameInfo.hints?.rank_dates.length > 0 ? gameInfo.hints?.rank_dates.map((d) => displayDate(d)).join(', ') : '???'}</div>
 	);
+}
+
+function getStatus(gameInfo: GameInfo) {
+	return <span 
+		className={gameInfo.hints.status === 4 ? game_styles.loved : game_styles.ranked }>
+		{ gameInfo.hints.status === 4 ? 'Loved' : 'Ranked' }
+	</span> 
 }
 
 function getPlayer(): HTMLAudioElement {
@@ -130,7 +138,7 @@ export default function Hint() {
 				</div>
 				<div className={styles.hint_info_container}>
 					<div className={addClass(styles.hint_ranked_dates)}>
-						<div className={styles.hint_label}>Ranked date :</div>
+						<div className={styles.hint_label}>{getStatus(gameInfo)} date :</div>
 						{getDatesDisplay(gameInfo)}
 					</div>
 					<div className={addClass(styles.hint_mappers)}>

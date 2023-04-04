@@ -52,6 +52,7 @@ export class Games {
 		game.player = player;
 		game.song_uri = `${process.env.SONG_URI}/games/${game.id}/${game.id}.mp3`;
 		game.song_length = someMapset.total_length as number;
+		game.hints.status = someMapset.approved;
 		game.params = params;
 		game.start_time = moment.now();
 		game.filters = params.filters;

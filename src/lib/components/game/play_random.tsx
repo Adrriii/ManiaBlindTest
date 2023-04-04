@@ -12,8 +12,11 @@ import Button from '../ui/button';
 import Filters from './filters';
 import IconText from '../ui/icon_text';
 import { ApiError } from 'next/dist/server/api-utils';
+import Welcome from '../welcome';
+import { UserContext } from '@/lib/contexts/user_context';
 
 export default function PlayRandom() {
+	const {userInfo, } = useContext(UserContext);
 	const {gameInfo, setGameInfo} = useContext(GameContext);
 	const gameInfoRef = useRef({gameInfo});
 	const [volume, setVolume] = useState(0.5);
@@ -163,12 +166,14 @@ export default function PlayRandom() {
 		<div className={styles.play_random}>
 			<audio id='player' onEnded={handleEnded}></audio>
 			<div className={styles.buttons}>
-				{ !isPlaying &&
-					<Button button={
-						<button onClick={playRandom}>
-							<IconText icon={'play_arrow'} text={'Play'}></IconText>
-						</button>
-					}></Button>
+				{ !isPlaying && <div className={styles.play_container}>
+						{ (!userInfo || userInfo?.osu_id <= 0) && <Welcome/> }
+						<Button button={
+							<button onClick={playRandom}>
+								<IconText icon={'play_arrow'} text={'Play'}></IconText>
+							</button>
+						}></Button>
+					</div>
 				}
 				{ !isPaused && isPlaying &&
 					<Button button={

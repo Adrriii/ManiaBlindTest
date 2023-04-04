@@ -1,6 +1,6 @@
 import styles from '@/styles/modules/hint.module.css';
 
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 
 import { GameContext } from '@/lib/contexts/game_context';
 import { UserContext } from '@/lib/contexts/user_context';
@@ -13,11 +13,15 @@ import IconText from '../ui/icon_text';
 export default function GuessButton() {
 	const {gameInfo, setGameInfo} = useContext(GameContext);
 	const {setUserInfo} = useContext(UserContext);
+	const [guessing, setGuessing] = useState(false);
 
 	const guessButtonId = 'guess_button';
 
 	function makeGuess() {
+		if((document.getElementById(guessButtonId) as HTMLButtonElement).disabled) return;
+		
 		if(gameInfo.guess_mapset) {
+			setGuessing(true);
 			const opts: RequestInit = {
 				method: 'POST',
 				headers: { 'Content-type': 'application/json' },
@@ -34,7 +38,7 @@ export default function GuessButton() {
 						});
 					});
 				});
-			});
+			}).finally(() => setGuessing(false));
 		}
 	}
 
@@ -44,7 +48,7 @@ export default function GuessButton() {
 				<button
 					id={guessButtonId}
 					onClick={makeGuess}
-					disabled={!gameInfo.guess_mapset || gameInfo.guess_mapset < 0}
+					disabled={guessing || !gameInfo.guess_mapset || gameInfo.guess_mapset < 0}
 				>
 					<IconText icon={'done'} text={'Guess'}></IconText>
 				</button>

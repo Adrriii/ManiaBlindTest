@@ -27,6 +27,7 @@ export class HintCreator {
 }
 
 export type Hints = {
+	status: number,
 	banner_url: string,
 	artist: string,
 	mappers: string[],
