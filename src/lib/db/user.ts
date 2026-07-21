@@ -35,6 +35,5 @@ export async function getTopUsers(page = 1): Promise<(UserInfo & UserStats)[]> {
 
 	const grades_desc = Grades.map(grade => ` grades_${grade} DESC`);
 
-	return await query(`SELECT * FROM user u, user_stats s WHERE u.osu_id = s.osu_id ORDER BY wins DESC, ${grades_desc} LIMIT ${limit} OFFSET ${offset}`, [], 'blindtest') as (UserInfo & UserStats)[];
 	return await query(`SELECT u.osu_id, u.username, u.profile_picture, s.* FROM user u, user_stats s WHERE u.osu_id = s.osu_id ORDER BY wins DESC, ${grades_desc} LIMIT ${limit} OFFSET ${offset}`, [], 'blindtest') as (UserInfo & UserStats)[];
 }

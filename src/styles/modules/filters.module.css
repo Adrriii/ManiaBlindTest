@@ -1,31 +1,57 @@
 .filters {
 	position: fixed;
-	left:0;
-	bottom: 0;
-	margin: 3%;
+	left: var(--gutter);
+	bottom: var(--gutter);
 	z-index: 500;
 }
 
 .filter_panel {
-	background: rgba(0,0,0,.3);
-	padding: 10px;
-	border: 1px solid rgba(0,0,0,.4);
-	border-radius: 20px;
-
 	position: fixed;
-	margin-left: 3%;
-	left: 0;
-	min-width: 200px;
-	width: 15%;
-	height: 65%;
-	top: 45%;
-	transform: translateY(-50%);
+	left: var(--gutter);
+	bottom: calc(var(--gutter) + clamp(72px, 9vh, 92px) + var(--sp-3));
+
+	width: min(280px, calc(100vw - 2 * var(--gutter)));
+	max-height: min(70vh, 620px);
+	overflow-y: auto;
+	overscroll-behavior: contain;
+
+	display: flex;
+	flex-direction: column;
+	gap: var(--sp-2);
+	padding: var(--sp-3);
+
+	background: rgba(10, 0, 28, .88);
+	backdrop-filter: blur(14px);
+	-webkit-backdrop-filter: blur(14px);
+	border: 1px solid var(--border);
+	border-radius: var(--r-lg);
+	box-shadow: var(--shadow);
+}
+
+.nb_results {
+	margin-top: var(--sp-2);
+	padding-top: var(--sp-2);
+	border-top: 1px solid var(--border);
+	color: var(--text-dim);
+	font-size: var(--fs-sm);
+}
+
+.is_ranked {
+	color: var(--text-dim);
+	font-size: var(--fs-sm);
 }
 
 .is_ranked_true {
-	color: rgba(0,255,0);
+	color: var(--win);
 }
 
 .is_ranked_false {
-	color: rgb(225,12,12);
+	color: var(--lose);
+}
+
+@media (max-width: 640px) {
+	.filter_panel {
+		bottom: calc(var(--gutter) + 72px + var(--sp-2));
+		max-height: min(60vh, 460px);
+	}
 }

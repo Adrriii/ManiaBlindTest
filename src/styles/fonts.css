@@ -1,4 +1,5 @@
 @font-face {
 	font-family: 'VT323-Regular';
-	src: local('VT323-Regular'), url(../fonts/VT323-Regular.ttf) format('truetype');
+	src: local('VT323-Regular'), url(/fonts/VT323-Regular.ttf) format('truetype');
+	font-display: block;
 }

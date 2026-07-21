@@ -1,70 +1,35 @@
 .hint {
-	width: 90%;
-	min-width: 350px;
-	margin-left: auto;
-	margin-right: auto;
-	margin-top: 2vh;
-}
-
-.action_buttons {
+	width: 100%;
+	max-width: 720px;
+	margin: 0 auto;
 	display: flex;
-	justify-content: center;
-}
-
-.action_buttons > div {
-	margin: 10px;
+	flex-direction: column;
+	gap: var(--sp-3);
 }
 
 .hint_map {
-	background: rgba(0,0,0,.1);
-	border-radius: 20px;
-
-	box-shadow: rgb(0, 0, 0, .4) 0px 0px 20px 4px;
-}
-
-.hint_info_container {
-	padding: 15px;
-	background: rgba(255,255,255,.15);
-	border-bottom-right-radius: 20px;
-	border-bottom-left-radius: 20px;
-}
-
-.hint_div {
-	display: flex;
-    justify-content: space-between;
-	flex-wrap: wrap;
-}
-
-.hint_label {
-	text-align: start;
-}
-
-.hint_info {
-	text-align: end;
-	flex-grow: 1;
+	background: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: var(--r-lg);
+	box-shadow: var(--shadow);
+	overflow: hidden;
 }
 
 .hint_banner_container {
 	position: relative;
 	width: 100%;
-	aspect-ratio: 675/187.5;
-	max-height: 25vh;
+	aspect-ratio: 26 / 5;
 	overflow: hidden;
+	background: var(--sunken);
 }
 
 .hint_banner_container::after {
-	top: 0;
+	content: '';
 	position: absolute;
+	inset: 0;
 	display: block;
-	content: ' ';
-	width: 100%;
-	height: 100%;
-
-	background: linear-gradient(
-		0deg,
-		rgba(0,0,0,.75),
-		transparent
-	);
+	background: linear-gradient(0deg, rgba(0, 0, 0, .8), transparent 65%);
+	pointer-events: none;
 }
 
 .hint_banner {
@@ -74,61 +39,147 @@
 .hint_banner > img {
 	width: 100%;
 	height: 100%;
-	border-top-right-radius: 20px;
-	border-top-left-radius: 20px;
 	object-fit: cover;
-    object-position: center;
+	object-position: center;
+	display: block;
+}
+
+.unknown {
+	opacity: .6;
+	filter: grayscale(.4);
 }
 
 .progress_bar {
 	position: absolute;
 	bottom: 0;
 	width: 100%;
-	height: 20px;
-	font-size: 20px;
+	height: 22px;
+	font-size: var(--fs-sm);
+	z-index: 2;
 }
 
 .progress_bar_bg {
 	position: absolute;
-	height: 100%;
-	width: 100%;
-	background: rgba(0,0,0,.6);
+	inset: 0;
+	background: rgba(0, 0, 0, .65);
 }
 
 .progress_bar_fill {
 	position: absolute;
 	height: 100%;
 	width: 0%;
-	background: rgb(171, 128, 237, .6);
+	background: linear-gradient(90deg, rgba(255, 90, 165, .55), rgba(171, 128, 237, .65));
 	z-index: 100;
 }
 
-.progress_bar_start {
-	position: absolute;
-	height: 100%;
-	color:white;
-	z-index: 200;
-	left: 3px;
-}
-
+.progress_bar_start,
 .progress_bar_end {
 	position: absolute;
 	height: 100%;
-	color:white;
+	display: flex;
+	align-items: center;
+	color: var(--text);
 	z-index: 200;
-	right: 3px;
+	font-variant-numeric: tabular-nums;
 }
 
-.unknown {
-	opacity: 0.7;
+.progress_bar_start {
+	left: var(--sp-2);
+}
+
+.progress_bar_end {
+	right: var(--sp-2);
+}
+
+.hint_info_container {
+	padding: var(--sp-2) var(--sp-4);
+	background: var(--surface-2);
+	display: flex;
+	flex-direction: column;
+}
+
+.hint_div {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	flex-wrap: wrap;
+	gap: 0 var(--sp-4);
+	padding: 2px 0;
+	border-bottom: 1px solid rgba(255, 255, 255, .07);
+}
+
+.hint_div:last-child {
+	border-bottom: none;
+}
+
+.hint_label {
+	text-align: start;
+	color: var(--text-mute);
+	white-space: nowrap;
+	flex-shrink: 0;
 }
 
 .hint_info {
-	color: white;
-	font-style: none;
+	text-align: end;
+	flex-grow: 1;
+	min-width: 0;
+	color: var(--text);
+	overflow-wrap: anywhere;
+}
+
+.hint_title .hint_info,
+.hint_artist .hint_info {
+	color: var(--accent);
+}
+
+.date_link {
+	text-decoration: none;
 }
 
 .date_link:hover {
 	cursor: pointer;
-	color: pink;
+	text-decoration: underline;
+}
+
+.guess_slot {
+	min-height: calc(1.45em + 2 * var(--sp-3) + 2px);
+	display: flex;
+	align-items: center;
+}
+
+.action_buttons {
+	display: flex;
+	justify-content: center;
+	flex-wrap: wrap;
+	gap: var(--sp-3);
+}
+
+.guess_button_valid > button:not(:disabled) {
+	border-color: var(--win);
+	background: rgba(70, 224, 138, .14);
+}
+
+.guess_button_valid > button:not(:disabled):hover {
+	border-color: var(--win);
+	box-shadow: 0 0 22px rgba(70, 224, 138, .35);
+}
+
+.next_hint > button:not(:disabled):hover {
+	border-color: var(--ranked);
+	box-shadow: 0 0 22px rgba(41, 163, 255, .35);
+}
+
+@media (max-width: 640px) {
+	.hint {
+		gap: var(--sp-3);
+	}
+
+	.hint_info_container {
+		padding: var(--sp-3);
+		font-size: var(--fs-sm);
+	}
+
+	.hint_div {
+		gap: var(--sp-1) var(--sp-3);
+	}
 }

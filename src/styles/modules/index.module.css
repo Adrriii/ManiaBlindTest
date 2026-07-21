@@ -1,5 +1,6 @@
 .main {
-	height: 100%;
+	min-height: 100vh;
+	min-height: 100dvh;
 	display: flex;
 	flex-direction: column;
 	align-items: stretch;
@@ -9,6 +10,28 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	height: 100%;
-	font-size: 200%;
+	flex-grow: 1;
+	min-height: 40vh;
+	padding: var(--sp-6) var(--gutter);
+	font-size: var(--fs-lg);
+	color: var(--text-dim);
+	text-align: center;
+}
+
+.authenticated,
+.authenticating {
+	padding: var(--sp-5) var(--sp-6);
+	border: 1px solid var(--border);
+	border-radius: var(--r-lg);
+	background: var(--surface);
+	box-shadow: var(--shadow);
+}
+
+.authenticated {
+	color: var(--accent);
+	text-shadow: var(--glow);
+}
+
+.authenticating {
+	color: var(--text-dim);
 }

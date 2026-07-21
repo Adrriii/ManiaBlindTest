@@ -49,6 +49,12 @@ export default function Score() {
 				</div>
 			}
 			{
+				(gameInfo.over && !gameInfo.win && gameInfo.guesses_used > 0) &&
+				<div className={styles.score_wrong}>
+					Wrong ! You guessed <span className={styles.score_wrong_guess}>{gameInfo.guess_song}</span>
+				</div>
+			}
+			{
 				(gameInfo.end_time > 0 && gameInfo.win) &&
 				<div className={styles.score_time}>
 					in { ((gameInfo.end_time - gameInfo.start_time) / 1000).toFixed(2) } seconds

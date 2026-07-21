@@ -1,35 +1,63 @@
 .game_container {
 	display: flex;
 	align-items: stretch;
-	
 	justify-content: center;
-	flex-grow: 100;
+	flex-grow: 1;
+	padding: var(--sp-4) var(--gutter) var(--sp-5);
 }
 
 .game {
-	/* flex-grow: 100; */
-	min-width: 350px;
-	width: 60%;
-	/* background: rgba(255,255,255,.15); */
-	border-radius: 1%;
-	padding: 1%;
+	width: var(--content-w);
+	max-width: 100%;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: var(--sp-3);
 }
+
+.game_controls,
+.game_main,
+.game_results {
+	min-width: 0;
+}
+
+.game_results {
+	display: flex;
+	flex-direction: column;
+}
+
 
 .welcome {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	font-size: 110%;
-	margin-bottom: 3vh;
+	text-align: center;
+	gap: var(--sp-3);
+	font-size: var(--fs-md);
+	margin-bottom: var(--sp-6);
+	text-wrap: balance;
 }
 
 .welcome p {
-	margin: 2vh;
+	margin: 0;
+	max-width: 46ch;
 }
+
 .ranked {
-	color: rgb(34, 159, 231);
+	color: var(--ranked);
 }
 
 .loved {
-	color: rgb(255, 72, 103);
+	color: var(--loved);
+}
+
+@media (max-width: 640px) {
+	.game_container {
+		padding: var(--sp-4) var(--gutter) var(--sp-6);
+	}
+
+	.welcome {
+		font-size: var(--fs-base);
+		margin-bottom: var(--sp-5);
+	}
 }

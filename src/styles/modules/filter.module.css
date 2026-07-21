@@ -1,24 +1,32 @@
 .filter {
-	margin: 5px;
+	width: 100%;
 }
 
 .filter > select {
 	width: 100%;
-	height: 100%;
-	font-family: 'VT323-Regular';
-	font-size: 120%;
-	color: white;
-	background: rgba(0,0,0,.3);
-	padding: 10px;
-	border: 1px solid rgba(0,0,0,.4);
-	border-radius: 20px;
+	font-family: inherit;
+	font-size: var(--fs-base);
+	color: var(--text);
+
+	background: var(--sunken);
+	padding: var(--sp-2) var(--sp-3);
+	border: 1px solid var(--border);
+	border-radius: var(--r-md);
+	transition: border-color var(--t-fast), background var(--t-fast);
 }
 
 .filter > select:hover {
 	cursor: pointer;
-	background: rgba(0,0,0,.1);
+	background: rgba(0, 0, 0, .18);
+	border-color: var(--border-strong);
+}
+
+.filter > select:focus {
+	outline: none;
+	border-color: var(--accent);
 }
 
 .filter > select * {
-	background-color: rgb(19, 0, 49);
+	background-color: #13002f;
+	color: var(--text);
 }

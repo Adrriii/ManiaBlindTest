@@ -55,4 +55,8 @@ export default class Score {
 		if(score.score > 0) return 'D';
 		return 'F';
 	}
+
+	static getGradeImage(grade: ScoreGrade): ScoreGrade {
+		return grade === 'F' ? 'D' : grade;
+	}
 }

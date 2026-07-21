@@ -43,13 +43,17 @@ export default function Header() {
 					<div className={`${styles.header_lbs} ${styles.clickable}`} onClick={goToLbs}>Leaderboards</div>
 				</div>
 				{
-					userInfo?.osu_id === -1 &&
+					userInfo === null &&
+					<div className={styles.header_placeholder}/>
+				}
+				{
+					userInfo !== null && userInfo.osu_id === -1 &&
 					<div className={`${styles.header_login} ${styles.clickable}`}>
 						<a href={oauth_url}><span>osu!</span> login</a>
 					</div>
 				}
 				{
-					userInfo?.osu_id !== -1 &&
+					userInfo !== null && userInfo.osu_id !== -1 &&
 					<div className={styles.header_logged}>
 						<div className={`${styles.header_username} ${styles.clickable}`} onClick={goToProfile}>{userInfo?.username}{(userInfo?.user_stats?.wins !== -1) ? ` (${userInfo?.user_stats?.wins} wins)` : ''}</div>
 						<div className={`${styles.header_profilepicture} ${styles.clickable}`} onClick={goToProfile}><img alt='profile picture' src={userInfo?.profile_picture}/></div>

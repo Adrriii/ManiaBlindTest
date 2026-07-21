@@ -1,7 +1,6 @@
 import styles from '@/styles/modules/user.module.css';
 
 import dynamic from "next/dynamic";
-const Plot = dynamic(() => import("react-plotly.js"), { ssr: false, })
 const Plot = dynamic(() => import("react-plotly.js").then(m => m.default), { ssr: false, })
 
 import { useEffect, useState } from 'react';
@@ -30,34 +29,12 @@ function getGradeMarker(grade: PlotCategory) {
 }
 
 function getGradeColor(grade: PlotCategory): string {
-	let color = 'rgba(255,0,0,.1)';
-	const fade = .75;
-	
-	switch(grade) {
-		case 'X':
-			color = `rgba(255,	255,	255,	${fade})`;
-			break;
-		case 'SS':
-			color = `rgba(255,	153,	0,		${fade})`;
-			break;
-		case 'S':
-			color = `rgba(255,	217,	0,		${fade})`;
-			break;
-		case 'A':
-			color = `rgba(0,		255,	0,		${fade})`;
-			break;
-		case 'B':
-			color = `rgba(0,		0,		255,	${fade})`;
-			break;
-		case 'C':
-			color = `rgba(255,	0,		255,	${fade})`;
-			break;
-		case 'D':
-			color = `rgba(255,	0,		0,		${fade})`;
-			break;
-	}
+	if(typeof window === 'undefined') return 'rgba(243,236,255,.12)';
 
-	return color;
+	const token = grade === 'Missing' ? '--grade-missing' : `--grade-${grade.toLowerCase()}`;
+	const value = getComputedStyle(document.documentElement).getPropertyValue(token).trim();
+
+	return value || 'rgba(243,236,255,.12)';
 }
 
 export default function CompletionGraph({ osu_id }: CompletionGraphProps) {
@@ -68,8 +45,10 @@ export default function CompletionGraph({ osu_id }: CompletionGraphProps) {
 	const yr_end = parseInt(moment().format('YYYY'));
 
 	const layout: Partial<Plotly.Layout> = {
+		autosize: true,
 		plot_bgcolor: "rgba(0,0,0,0)",
 		paper_bgcolor: "rgba(0,0,0,0)",
+		font: { family: 'VT323-Regular, monospace' },
 		barmode: 'stack',
 		legend: {
 			font: {
@@ -141,11 +120,25 @@ export default function CompletionGraph({ osu_id }: CompletionGraphProps) {
 		}
 	}, [osu_id]);
 
+	const has_data = userCompletion !== null && userCompletion.length > 0;
+
 	return (<>
 		{
-			(osu_id > 0 && data !== null) &&
+			osu_id > 0 &&
 			<div className={styles.completion_graph}>
-				<Plot data={data} layout={layout} />
+				{
+					(has_data && data !== null) ?
+					<Plot
+						data={data}
+						layout={layout}
+						config={{ displayModeBar: false, responsive: true, staticPlot: false }}
+						useResizeHandler={true}
+						style={{ width: '100%', height: '100%' }}
+					/> :
+					<div className={styles.completion_empty}>
+						{ userCompletion === null ? 'Loading completion…' : 'No completion data yet' }
+					</div>
+				}
 			</div>
 		}
 	</>)

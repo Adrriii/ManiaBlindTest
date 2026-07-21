@@ -7,10 +7,7 @@ import { ReactNode, useContext, useEffect, useRef, useState } from 'react';
 import { GameContext } from '../../contexts/game_context';
 import { GameInfo } from '../../types/game_info';
 
-import Button from '../ui/button';
-import IconText from '../ui/icon_text';
 import Guess from './guess';
-import GuessButton from './guess_button';
 
 function displayDate(date: string): string {
 	return moment(date).format('DD MMMM YYYY');
@@ -103,16 +100,6 @@ export default function Hint() {
 		}
 	}, [prevRefresher, progressRefresher])
 
-	function nextHint(): void {
-		if(!gameInfo.id) return;
-
-		fetch(`/api/next_hint/${gameInfo.id}`).then((data: Response) => {
-			data.json().then((game: GameInfo) => {
-				setGameInfo(game);
-			});
-		});
-	}
-
 	function addClass(style: string): string {
 		return `${styles.hint_div} ${style}`;
 	}
@@ -160,23 +147,10 @@ export default function Hint() {
 				</div>
 			</div>
 			{ !gameInfo.over &&
-				<Guess/>
+				<div className={styles.guess_slot}>
+					<Guess/>
+				</div>
 			}
-			<div className={styles.action_buttons}>
-				{ (!gameInfo.over) &&
-					<Button 
-						button={
-							<button onClick={nextHint} disabled={gameInfo.hints_used > 4}>
-								<IconText icon={'help'} text={'Hint'}></IconText>
-							</button>
-						}
-						styles={[styles.next_hint]}
-					></Button>
-				}
-				{ !gameInfo.over &&
-					<GuessButton/>
-				}
-			</div>
 		</div>
 		}
 	</>)

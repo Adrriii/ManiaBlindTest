@@ -1,25 +1,46 @@
 .about {
-	width: 75%;
-	margin: 3vh auto 3vh;
+	width: min(760px, calc(100% - 2 * var(--gutter)));
+	margin: var(--sp-6) auto;
 
-	background: rgba(0,0,0,.3);
-	border: 1px solid rgba(0,0,0,.4);
-	padding: 5px 20px 5px;
-	border-radius: 10px;
+	background: var(--surface);
+	border: 1px solid var(--border);
+	padding: var(--sp-5) var(--sp-6);
+	border-radius: var(--r-lg);
+	box-shadow: var(--shadow);
 }
 
 .about section {
-	color: pink;
-	text-decoration: underline;
+	display: block;
+	color: var(--accent);
+	text-decoration: none;
+	font-size: var(--fs-md);
+	margin-bottom: var(--sp-3);
+	padding-bottom: var(--sp-2);
+	border-bottom: 1px solid var(--border);
 }
 
 .about p {
-	margin-bottom: 3vh;
+	margin: 0 0 var(--sp-5);
+	color: var(--text-dim);
+	overflow-wrap: anywhere;
+}
+
+.about p:last-child {
+	margin-bottom: 0;
 }
 
 .about a {
 	color: rgb(255, 224, 229);
+	text-underline-offset: 3px;
 }
+
 .about a:hover {
-	color: pink;
+	color: var(--accent);
+}
+
+@media (max-width: 640px) {
+	.about {
+		margin: var(--sp-4) auto;
+		padding: var(--sp-4);
+	}
 }

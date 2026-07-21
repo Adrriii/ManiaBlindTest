@@ -1,110 +1,179 @@
 .leaderboards_container {
-	width: 90%;
-	margin: 2.5vh auto 0;
+	width: min(1080px, calc(100% - 2 * var(--gutter)));
+	margin: var(--sp-6) auto var(--sp-7);
 }
 
 .leaderboards {
 	display: flex;
 	flex-direction: column;
+	gap: var(--sp-2);
 }
 
 .leaderboard_head,
-.leaderboards > div {
-	display: flex;
-	justify-content: space-between;
+.user_thumb {
+	display: grid;
+	grid-template-columns:
+		3.2rem
+		minmax(0, 1fr)
+		4.2rem 4.2rem 4.2rem
+		2.8rem 2.8rem 2.8rem;
+	align-items: center;
+	gap: var(--sp-2);
 
-	border: 1px solid rgba(0,0,0,.2);
-	padding: 5px;
-	margin: 2px;
-	height: 4vh;
+	min-height: 3.4rem;
+	padding: var(--sp-2) var(--sp-3);
+	border: 1px solid var(--border);
+	border-radius: var(--r-md);
+	max-width: 100%;
+	overflow: hidden;
 }
+
 .leaderboard_head {
-	background: rgba(0,0,0,.3);
+	background: rgba(0, 0, 0, .35);
+	color: var(--text-mute);
+	font-size: var(--fs-sm);
+	min-height: 2.8rem;
+	margin-bottom: var(--sp-1);
+	position: sticky;
+	top: var(--header-h);
+	z-index: 400;
+	backdrop-filter: blur(10px);
+	-webkit-backdrop-filter: blur(10px);
 }
-.leaderboards > div {
-	background: rgba(0,0,0,.2);
-	border-radius: 5px;
+
+.user_thumb {
+	background: var(--surface);
+	transition: background var(--t-fast), border-color var(--t-fast);
+}
+
+.user_thumb:hover {
+	background: var(--surface-2);
+	border-color: var(--border-strong);
 }
 
 .leaderboard_head > div,
-.leaderboards > div > div {
+.user_thumb > div {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	min-width: 0;
 }
 
-.lb_rank, .user_rank {
-	width: 5%;
+.lb_rank,
+.user_rank {
+	justify-content: flex-start !important;
+	color: var(--text-mute);
+	font-variant-numeric: tabular-nums;
 }
 
-.lb_name, .user {
-	width: 35%;
+.lb_name,
+.user {
+	justify-content: flex-start !important;
+	gap: var(--sp-2);
 }
 
-.lb_wins, .user_wins,
-.lb_losses, .user_losses,
-.lb_skips, .user_skips {
-	width: 10%;
+.user > img {
+	width: 2.4rem;
+	height: 2.4rem;
+	flex: 0 0 auto;
+	border-radius: var(--r-sm);
+	border: 1px solid var(--border);
+	background: var(--sunken);
+	object-fit: cover;
 }
 
-.lb_grades_x, .user_grades_x,
-.lb_grades_ss, .user_grades_ss,
-.lb_grades_s, .user_grades_s {
-	width: 10%;
+.user_name {
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	transition: color var(--t-fast);
+}
+
+.user_name:hover {
+	cursor: pointer;
+	color: var(--accent);
+}
+
+.lb_wins,
+.lb_losses,
+.lb_skips,
+.user_wins,
+.user_losses,
+.user_skips {
+	font-variant-numeric: tabular-nums;
+}
+
+.user_wins {
+	color: var(--win);
+}
+
+.user_losses {
+	color: var(--lose);
+}
+
+.user_skips {
+	color: var(--skip);
 }
 
 .lb_grades_x > img,
 .lb_grades_ss > img,
 .lb_grades_s > img {
-	height: 3.5vh;
-}
-
-.user_wins {
-	color: rgba(0,255,0,.75);
-}
-
-.user_losses {
-	color: rgba(255,0,0,.75);
-}
-
-.user_skips {
-	color: rgba(255,255,255,.55);
+	height: 1.7rem;
+	width: auto;
 }
 
 .user_grades_x {
-	color: #b7b7b7;
+	color: var(--grade-x);
 }
 
 .user_grades_ss {
-	color: #ffa713;
+	color: var(--grade-ss);
 }
 
 .user_grades_s {
-	color: #ff662b;
+	color: var(--grade-s);
 }
 
-.user {
-	display: flex;
-	align-items: center;
-	justify-content: left!important;
+@media (max-width: 860px) {
+	.leaderboard_head,
+	.user_thumb {
+		grid-template-columns:
+			2.6rem
+			minmax(0, 1fr)
+			3.4rem 3.4rem 3.4rem;
+		font-size: var(--fs-sm);
+	}
+
+	.lb_grades_x,
+	.lb_grades_ss,
+	.lb_grades_s,
+	.user_grades_x,
+	.user_grades_ss,
+	.user_grades_s {
+		display: none !important;
+	}
 }
 
-.user > img {
-	width: 5vh;
-	aspect-ratio: 1;
-	border-radius: 10px;
-	border: 1px solid rgba(0,0,0,.5);
-	background: rgba(0,0,0,.5);
-}
+@media (max-width: 430px) {
+	.leaderboards_container {
+		margin-top: var(--sp-4);
+	}
 
-.user_name {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	padding-left: 5px;
-}
+	.leaderboard_head,
+	.user_thumb {
+		grid-template-columns:
+			1.9rem
+			minmax(0, 1fr)
+			2.5rem 2.5rem 2.5rem;
+		gap: 3px;
+		padding: var(--sp-1) var(--sp-2);
+		min-height: 3rem;
+		font-size: var(--fs-xs);
+	}
 
-.user_name:hover {
-	cursor: pointer;
-	color: pink;
+	.user > img {
+		width: 2rem;
+		height: 2rem;
+	}
 }

@@ -11,6 +11,8 @@ import { GameInfo } from '../../types/game_info';
 import Button from '../ui/button';
 import Filters from './filters';
 import IconText from '../ui/icon_text';
+import GuessButton from './guess_button';
+import hint_styles from '@/styles/modules/hint.module.css';
 import { ApiError } from 'next/dist/server/api-utils';
 import Welcome from '../welcome';
 import { UserContext } from '@/lib/contexts/user_context';
@@ -142,6 +144,16 @@ export default function PlayRandom() {
 		playRandom();
 	}, [pause, playRandom]);
 
+	function nextHint(): void {
+		if(!gameInfo.id) return;
+
+		fetch(`/api/next_hint/${gameInfo.id}`).then((data: Response) => {
+			data.json().then((game: GameInfo) => {
+				setGameInfo(game);
+			});
+		});
+	}
+
 	function handleVolumeChange(volume: number) {
 		localStorage.setItem("volume", volume.toString());
 		setVolume(volume);
@@ -189,6 +201,17 @@ export default function PlayRandom() {
 						</button>
 					}></Button>
 				}
+				{ isPlaying && !gameInfo.over &&
+					<Button
+						button={
+							<button onClick={nextHint} disabled={gameInfo.hints_used > 4}>
+								<IconText icon={'help'} text={'Hint'}></IconText>
+							</button>
+						}
+						styles={[hint_styles.next_hint]}
+					></Button>
+				}
+				{ isPlaying && !gameInfo.over && <GuessButton/> }
 				{ isPlaying && gameInfo.over &&
 					<Button button={
 						<button onClick={next}>

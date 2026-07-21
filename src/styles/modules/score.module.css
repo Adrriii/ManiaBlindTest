@@ -2,11 +2,45 @@
 	display: flex;
 	align-content: center;
 	align-items: center;
-	margin-top: 1vh;
 	flex-direction: column;
+	gap: var(--sp-1);
+	margin-top: var(--sp-2);
+	width: 100%;
 }
 
-.leaderboard,
+.score_number {
+	font-size: var(--fs-lg);
+	color: var(--accent);
+	font-variant-numeric: tabular-nums;
+	text-shadow: var(--glow);
+}
+
+.score_time {
+	font-size: var(--fs-sm);
+	color: var(--text-dim);
+}
+
+.score_wrong {
+	font-size: var(--fs-lg);
+	color: var(--lose);
+	text-align: center;
+	text-shadow: 0 0 20px rgba(255, 93, 93, .35);
+	overflow-wrap: anywhere;
+}
+
+.score_wrong_guess {
+	color: rgb(197, 134, 255);
+}
+
 .own_score {
 	width: 100%;
+	margin-top: var(--sp-2);
+}
+
+.leaderboard {
+	width: 100%;
+	margin-top: var(--sp-2);
+	display: flex;
+	flex-direction: column;
+	gap: var(--sp-2);
 }

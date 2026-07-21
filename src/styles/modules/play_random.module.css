@@ -1,60 +1,15 @@
-.game_container {
+.play_random {
 	display: flex;
-	align-items: stretch;
-	
-	justify-content: center;
-	flex-grow: 100;
-}
-
-.game {
-	flex-grow: 100;
-	max-width: 900px;
-	background: rgba(255,255,255,.15);
-	border-radius: 1%;
-	margin: 2em;
-	padding: 1%;
+	flex-direction: column;
+	flex-grow: 1;
 }
 
 .buttons {
 	display: flex;
 	justify-content: center;
-}
-
-.buttons > div {
-	margin: 5px;
-}
-
-.volume_controller {
-	position: fixed;
-	bottom:0;
-	right:0;
-	margin: 3%;
-	background: rgba(0,0,0,.5);
-	padding: 1vh;
-	border-radius: 20px;
-	border: 1px solid rgba(0,0,0,.75);
-}
-.volume_controller > input {
-	width: 100%;
-}
-.keybinds {
-	font-size: 75%;
-	display: flex;
-	flex-direction: column;
-}
-
-.keybinds > div {
-	display: flex;
-	justify-content: space-between;
-	flex-grow: 100;
-	width: 25vh;
-}
-
-.keybinds code {
-	background: rgba(37, 37, 37, 0.5);
-	padding: 5px;
-	border-radius: 5px;
-	font-size: 75%;
+	align-items: flex-start;
+	flex-wrap: wrap;
+	gap: var(--sp-3);
 }
 
 .play_container {
@@ -62,4 +17,68 @@
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+	gap: var(--sp-5);
+	width: 100%;
+}
+
+.volume_controller {
+	position: fixed;
+	bottom: var(--gutter);
+	right: var(--gutter);
+	z-index: 500;
+
+	width: min(260px, calc(100vw - 2 * var(--gutter)));
+	padding: var(--sp-3);
+
+	background: rgba(10, 0, 28, .78);
+	backdrop-filter: blur(10px);
+	-webkit-backdrop-filter: blur(10px);
+	border: 1px solid var(--border);
+	border-radius: var(--r-md);
+	box-shadow: var(--shadow-sm);
+}
+
+.volume_controller > input {
+	width: 100%;
+	margin: 0 0 var(--sp-2);
+	accent-color: var(--accent);
+	cursor: pointer;
+}
+
+.keybinds {
+	font-size: var(--fs-xs);
+	color: var(--text-dim);
+	display: flex;
+	flex-direction: column;
+	gap: var(--sp-1);
+}
+
+.keybinds > div {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: var(--sp-3);
+}
+
+.keybinds code {
+	background: rgba(0, 0, 0, .45);
+	border: 1px solid var(--border);
+	padding: 1px 5px;
+	border-radius: var(--r-sm);
+	font-size: .9em;
+}
+
+@media (max-width: 720px) {
+	.volume_controller {
+		width: min(180px, calc(100vw - 2 * var(--gutter)));
+		padding: var(--sp-2);
+	}
+
+	.keybinds {
+		display: none;
+	}
+
+	.volume_controller > input {
+		margin-bottom: 0;
+	}
 }

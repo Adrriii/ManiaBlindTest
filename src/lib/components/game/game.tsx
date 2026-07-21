@@ -8,7 +8,6 @@ import { GameInfo, getEmptyGameInfo } from '../../types/game_info';
 
 import Hint from './hint';
 import PlayRandom from './play_random';
-import Result from './result';
 import Score from './score';
 
 export default function Game() {
@@ -28,10 +27,15 @@ export default function Game() {
 				userInfo &&
 				<div className={styles.game}>
 					<GameContext.Provider value={gameContext} >
-						<PlayRandom/>
-						<Hint/>
-						<Result/>
-						<Score/>
+						<div className={styles.game_main}>
+							<Hint/>
+						</div>
+						<div className={styles.game_controls}>
+							<PlayRandom/>
+						</div>
+						<div className={styles.game_results}>
+							<Score/>
+						</div>
 					</GameContext.Provider>
 				</div>
 			}
