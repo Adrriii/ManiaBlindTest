@@ -92,6 +92,7 @@ export type UserCompletion = {
 	yr: number,
 	total: number,
 	scores: number,
+	missed: number,
 	grades_X: number,
 	grades_SS: number,
 	grades_S: number,
@@ -102,8 +103,13 @@ export type UserCompletion = {
 };
 
 export async function getUserCompletion(osu_id: number): Promise<UserCompletion[]> {
-	return await 
-		query('SELECT YEAR(b.approved_date) as yr, COUNT(*) as total, COUNT(s.osu_id) as scores \
+	const completed = 's.osu_id IS NOT NULL AND s.grade <> "F"';
+	const attempted = '(s.osu_id IS NOT NULL OR k.osu_id IS NOT NULL)';
+
+	return await
+		query(`SELECT YEAR(b.approved_date) as yr, COUNT(*) as total \
+		, SUM(IF(${completed}, 1, 0)) as scores \
+		, SUM(IF(NOT (${completed}) AND ${attempted}, 1, 0)) as missed \
 		, SUM(IF(s.grade = "X", 1, 0)) as grades_X \
 		, SUM(IF(s.grade = "SS", 1, 0)) as grades_SS \
 		, SUM(IF(s.grade = "S", 1, 0)) as grades_S \
@@ -112,10 +118,11 @@ export async function getUserCompletion(osu_id: number): Promise<UserCompletion[
 		, SUM(IF(s.grade = "C", 1, 0)) as grades_C \
 		, SUM(IF(s.grade = "D", 1, 0)) as grades_D \
 		FROM (SELECT * FROM beatmap GROUP BY beatmapset_id) b \
-		LEFT JOIN user_score s ON b.hash_id = s.hash_id \
-		WHERE (s.osu_id = ? OR s.osu_id is null) AND b.available = 1 \
-		GROUP BY yr HAVING yr > 2006',
-		[osu_id.toString()],
+		LEFT JOIN user_score s ON b.hash_id = s.hash_id AND s.osu_id = ? \
+		LEFT JOIN user_skip k ON b.hash_id = k.hash_id AND k.osu_id = ? \
+		WHERE b.available = 1 \
+		GROUP BY yr HAVING yr > 2006`,
+		[osu_id.toString(), osu_id.toString()],
 		'blindtest'
 	) as UserCompletion[];
 }

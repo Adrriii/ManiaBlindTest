@@ -11,6 +11,7 @@ import { HintCreator } from "../types/hints";
 import moment from "moment";
 import Score from "../types/score";
 import { addUserLoss, addUserPlay, addUserWin, changeUserGradeBy } from '../db/user_stats';
+import { addUserSkip } from '../db/user_skip';
 import { UserInfo } from "../types/user_info";
 import { addUserScore, getUserScore, UserScore } from "../db/user_score";
 
@@ -154,7 +155,11 @@ export class Games {
 		game.score = Score.computeScore(game);
 		game.answer = serverGame.answer.song;
 		game.mapsets = Array.from(serverGame.answer.mapsets.values());
-		
+
+		if(game.guesses_used === 0 && game.player.osu_id > 0 && isFilterRanked(game.filters)) {
+			addUserSkip(game.player.osu_id, serverGame.answer.song.hash_id, serverGame.answer.song.beatmapset_id);
+		}
+
 		this.games.delete(game.id);
 	}
 	

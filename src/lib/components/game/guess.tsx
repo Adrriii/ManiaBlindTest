@@ -54,55 +54,25 @@ export default function Guess() {
 		});
 	}, [gameInfo, setGameInfo]);
 
-	const tryMoveSelection = useCallback((selection: Song[], direction: 'up' | 'down', next_selections: Song[][]): boolean => {
-		if(selection.length === 0) return tryMoveSelection(next_selections[0], direction, next_selections.slice(1, next_selections.length));
-		
-		if(focusedRef.current.focusedProposition === null) {
-			const next = selection[direction === 'down' ? 0 : (selection.length - 1)];
-			if(next) {
-				setFocusedProposition(next);
-				return true;
-			}
+	const moveSelection = useCallback((direction: 'up' | 'down') => {
+		const list = [...propositions.titles, ...propositions.artists];
+		if(list.length === 0) return;
 
-			if(next_selections.length === 0) return false;
-			return tryMoveSelection(next_selections[0], direction, next_selections.slice(1, next_selections.length));
-		}
-		
-		for(
-			let i = (direction === 'down' ? 0 : (selection.length - 1));
-			(direction === 'down' ? i < selection.length : i >= 0);
-			(direction === 'down' ? i++ : i--)
-		) {
-			if(selection[i].hash_id === focusedRef.current.focusedProposition.hash_id) {
-				const test = selection[(direction === 'down' ? i+1 : i-1)];
-				if(test === undefined) {
-					if(next_selections.length === 0) return false;
-					const next = next_selections[0];
-					if(next.length === 0) return false;
-					setFocusedProposition(next[(direction === 'down' ? 0 : next.length - 1)]);
-					return true;
-				}
-				setFocusedProposition(test);
-				return true;
-			}
+		const focused = focusedRef.current.focusedProposition;
+		const step = direction === 'down' ? 1 : -1;
+		const index = focused ? list.findIndex(s => s.hash_id === focused.hash_id) : -1;
+
+		if(index === -1) {
+			setFocusedProposition(list[direction === 'down' ? 0 : list.length - 1]);
+			return;
 		}
 
-		if(next_selections.length === 0) return false;
-		return tryMoveSelection(next_selections[0], direction, next_selections.slice(1, next_selections.length));
-	}, []);
+		setFocusedProposition(list[(index + step + list.length) % list.length]);
+	}, [propositions]);
 
-	const moveSelectionUp = useCallback(() => {
-		if(propositions.artists.length === 0 && propositions.titles.length === 0) return;
-		
-		tryMoveSelection(propositions.titles, 'up', [propositions.artists]);
-	}, [propositions, tryMoveSelection]);
+	const moveSelectionUp = useCallback(() => moveSelection('up'), [moveSelection]);
+	const moveSelectionDown = useCallback(() => moveSelection('down'), [moveSelection]);
 
-	const moveSelectionDown = useCallback(() => {
-		if(propositions.artists.length === 0 && propositions.titles.length === 0) return;
-		
-		tryMoveSelection(propositions.artists, 'down', [propositions.titles]);
-	}, [propositions, tryMoveSelection]);
-	
 
 	function getSongText(mapset: Song) {
 		return `${mapset.artist} - ${mapset.title}`;
@@ -173,12 +143,12 @@ export default function Guess() {
 		<div className={style.guess}>
 			<div className={style.propositions_list}>
 				{
-					propositions.artists.length > 0 &&
-					<Propositions search_type={'artists'} results={propositions.artists} focused={focusedProposition}></Propositions>
-				}
-				{
 					propositions.titles.length > 0 &&
 					<Propositions search_type={'titles'} results={propositions.titles} focused={focusedProposition}></Propositions>
+				}
+				{
+					propositions.artists.length > 0 &&
+					<Propositions search_type={'artists'} results={propositions.artists} focused={focusedProposition}></Propositions>
 				}
 			</div>
 			<input 

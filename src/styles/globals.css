@@ -33,6 +33,7 @@
 	--grade-c: #9c78d8;
 	--grade-d: #e46c6c;
 	--grade-f: #e46c6c;
+	--grade-missed: rgba(243, 236, 255, .22);
 	--grade-missing: rgba(243, 236, 255, .12);
 
 	--r-sm: 8px;
