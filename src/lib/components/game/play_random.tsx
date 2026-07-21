@@ -13,6 +13,7 @@ import Filters from './filters';
 import IconText from '../ui/icon_text';
 import GuessButton from './guess_button';
 import hint_styles from '@/styles/modules/hint.module.css';
+import btn_styles from '@/styles/modules/button.module.css';
 import { ApiError } from 'next/dist/server/api-utils';
 import Welcome from '../welcome';
 import { UserContext } from '@/lib/contexts/user_context';
@@ -177,16 +178,20 @@ export default function PlayRandom() {
 	return (<>
 		<div className={styles.play_random}>
 			<audio id='player' onEnded={handleEnded}></audio>
-			<div className={styles.buttons}>
-				{ !isPlaying && <div className={styles.play_container}>
-						{ (!userInfo || userInfo?.osu_id <= 0) && <Welcome/> }
-						<Button button={
+			{ !isPlaying &&
+				<div className={styles.play_container}>
+					<Welcome/>
+					<Button
+						button={
 							<button onClick={playRandom}>
 								<IconText icon={'play_arrow'} text={'Play'}></IconText>
 							</button>
-						}></Button>
-					</div>
-				}
+						}
+						styles={[btn_styles.button_lg]}
+					></Button>
+				</div>
+			}
+			<div className={styles.buttons}>
 				{ !isPaused && isPlaying &&
 					<Button button={
 						<button onClick={pause}>

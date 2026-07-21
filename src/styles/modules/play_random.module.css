@@ -17,8 +17,17 @@
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	gap: var(--sp-5);
+	gap: var(--sp-6);
 	width: 100%;
+	min-height: min(72vh, 640px);
+	padding-bottom: var(--sp-6);
+}
+
+@media (max-width: 640px) {
+	.play_container {
+		gap: var(--sp-5);
+		min-height: min(66vh, 560px);
+	}
 }
 
 .volume_controller {

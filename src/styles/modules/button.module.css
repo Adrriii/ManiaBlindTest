@@ -55,10 +55,37 @@
 	box-shadow: none;
 }
 
+.button.button_lg {
+	width: clamp(150px, 21vh, 190px);
+	height: clamp(150px, 21vh, 190px);
+}
+
+.button.button_lg > button {
+	font-size: var(--fs-xl);
+	gap: var(--sp-1);
+	background: var(--accent-dim);
+	border-color: var(--accent);
+	box-shadow: 0 0 26px rgba(255, 90, 165, .22);
+}
+
+.button.button_lg > button:hover {
+	background: rgba(255, 90, 165, .28);
+	box-shadow: 0 0 40px rgba(255, 90, 165, .45);
+}
+
 @media (max-width: 640px) {
 	.button {
 		width: 72px;
 		height: 72px;
+	}
+
+	.button.button_lg {
+		width: 132px;
+		height: 132px;
+	}
+
+	.button.button_lg > button {
+		font-size: var(--fs-base);
 	}
 
 	.button > button {
