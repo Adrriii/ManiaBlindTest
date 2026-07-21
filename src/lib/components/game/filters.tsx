@@ -51,14 +51,14 @@ export default function Filters() {
 	const optionsYearMin = [
 		{ value: 'start', label: 'Start year'}
 	];
-	for(let d = 2014; d <= 2023; d++) {
+	for(let d = 2014; d <= 2026; d++) {
 		optionsYearMin.push({ value: `${d}`, label: `min. ${d}` });
 	}
 
 	const optionsYearMax = [
 		{ value: 'now', label: 'End year'}
 	];
-	for(let d = 2014; d <= 2023; d++) {
+	for(let d = 2014; d <= 2026; d++) {
 		optionsYearMax.push({ value: `${d}`, label: `max. ${d}` });
 	}
 	

@@ -28,6 +28,7 @@ export default function Leaderboards() {
 				<div className={styles.lb_name}>Player</div>
 				<div className={styles.lb_wins}>Wins</div>
 				<div className={styles.lb_losses}>Wrongs</div>
+				<div className={styles.lb_skips}>Skips</div>
 				<div className={styles.lb_grades_x}><img src={`/grades/X.png`} alt='X'/></div>
 				<div className={styles.lb_grades_ss}><img src={`/grades/SS.png`} alt='SS'/></div>
 				<div className={styles.lb_grades_s}><img src={`/grades/S.png`} alt='S'/></div>

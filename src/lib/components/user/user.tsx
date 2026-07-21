@@ -86,6 +86,7 @@ export default function User({ osu_id }: {osu_id: number}) {
 								<div className={styles.user_stats}>
 									<div className={styles.user_stats_wins}>{userInfo.user_stats.wins} wins</div>
 									<div className={styles.user_stats_loss}>{userInfo.user_stats.losses} wrongs</div>
+									<div className={styles.user_stats_skip}>{userInfo.user_stats.skips} skips</div>
 								</div>	
 							}						
 						</div>

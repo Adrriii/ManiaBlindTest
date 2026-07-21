@@ -2,6 +2,7 @@ import styles from '@/styles/modules/user.module.css';
 
 import dynamic from "next/dynamic";
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false, })
+const Plot = dynamic(() => import("react-plotly.js").then(m => m.default), { ssr: false, })
 
 import { useEffect, useState } from 'react';
 

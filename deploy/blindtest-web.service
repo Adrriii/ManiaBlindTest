@@ -1,0 +1,21 @@
+[Unit]
+Description=osu!mania Blind Test (prod web, port 8420)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/main/osu/blindtest/web
+Environment=NODE_ENV=production
+# Pin the Node version (v18.15.0 via nvm) without relying on nvm at runtime
+Environment=PATH=/home/adri/.nvm/versions/node/v18.15.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+# Serve a prebuilt app only — no `next build` here (build via update.sh).
+# Run the next binary directly (not via npm) so systemd's SIGTERM reaches it
+# and stop/restart is instant instead of waiting out the kill timeout.
+ExecStart=/home/adri/.nvm/versions/node/v18.15.0/bin/node node_modules/.bin/next start -p 8420
+Restart=on-failure
+RestartSec=5
+KillMode=mixed
+
+[Install]
+WantedBy=default.target

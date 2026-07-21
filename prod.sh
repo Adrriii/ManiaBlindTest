@@ -1,4 +1,6 @@
 #!/usr/bin/sh
+cd "$(dirname "$0")"
 . ~/.nvm/nvm.sh
 nvm use v18.15.0
-npm run launch
+fuser -k 8420/tcp
+npm run prod

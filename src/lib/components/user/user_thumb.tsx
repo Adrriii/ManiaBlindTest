@@ -28,6 +28,7 @@ export default function UserThumb({ userInfo, userStats, rank }: UserThumbProps)
 				</div>
 				<div className={styles.user_wins}>{userStats.wins}</div>
 				<div className={styles.user_losses}>{userStats.losses}</div>
+				<div className={styles.user_skips}>{userStats.skips}</div>
 				<div className={styles.user_grades_x}>{userStats.grades_X}</div>
 				<div className={styles.user_grades_ss}>{userStats.grades_SS}</div>
 				<div className={styles.user_grades_s}>{userStats.grades_S}</div>

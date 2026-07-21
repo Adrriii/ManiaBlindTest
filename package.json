@@ -7,6 +7,8 @@
     "build": "next build",
     "start": "next start",
     "launch": "next build && next start",
+    "prod": "next build && next start -p 8420",
+    "prod:serve": "next start -p 8420",
     "preprod": "next build && next start -p 3002",
     "lint": "next lint"
   },
