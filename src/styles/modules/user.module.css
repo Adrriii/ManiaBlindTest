@@ -141,14 +141,137 @@
 	background: var(--surface);
 	border: 1px solid var(--border);
 	border-radius: var(--r-lg);
-	padding: var(--sp-2);
+	padding: var(--sp-3);
+	overflow: hidden;
+
+	display: flex;
+	flex-direction: column;
+	gap: var(--sp-2);
+}
+
+.completion_head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: var(--sp-2) var(--sp-3);
+	flex: 0 0 auto;
+}
+
+.completion_title {
+	font-size: var(--fs-sm);
+	color: var(--text-dim);
+}
+
+.completion_legend {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--sp-1) var(--sp-3);
+}
+
+.completion_legend_item {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--sp-1);
+	font-size: var(--fs-xs);
+	color: var(--text-mute);
+}
+
+.completion_legend_item > i {
+	width: .7em;
+	height: .7em;
+	border-radius: 2px;
+	display: block;
+}
+
+.completion_plot {
+	flex: 1 1 auto;
+	min-height: 0;
+	display: flex;
+	gap: var(--sp-2);
+}
+
+.completion_yaxis {
+	position: relative;
+	flex: 0 0 auto;
+	width: 2.8rem;
+	margin-bottom: 1.15rem;
+}
+
+.completion_ytick {
+	position: absolute;
+	right: 0;
+	transform: translateY(50%);
+	font-size: var(--fs-xs);
+	color: var(--text-mute);
+	white-space: nowrap;
+	font-variant-numeric: tabular-nums;
+}
+
+.completion_area {
+	flex: 1 1 auto;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+}
+
+.completion_canvas {
+	position: relative;
+	flex: 1 1 auto;
+	min-height: 0;
+}
+
+.completion_gridline {
+	position: absolute;
+	left: 0;
+	right: 0;
+	border-top: 1px dotted rgba(255, 255, 255, .10);
+}
+
+.completion_bars {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: flex-end;
+	gap: 2px;
+}
+
+.completion_col {
+	flex: 1 1 0;
+	min-width: 0;
+	height: 100%;
+	display: flex;
+	align-items: flex-end;
+}
+
+.completion_stack {
+	width: 100%;
+	min-height: 2px;
+	display: flex;
+	flex-direction: column-reverse;
+	border-radius: 3px 3px 0 0;
 	overflow: hidden;
 }
 
-.completion_graph > div,
-.completion_graph .plot-container {
-	height: 100%;
+.completion_seg {
 	width: 100%;
+}
+
+.completion_years {
+	flex: 0 0 auto;
+	height: 1.15rem;
+	display: flex;
+	gap: 2px;
+	padding-top: 2px;
+}
+
+.completion_year {
+	flex: 1 1 0;
+	min-width: 0;
+	text-align: center;
+	font-size: var(--fs-xs);
+	color: var(--text-mute);
+	overflow: hidden;
 }
 
 .completion_empty {

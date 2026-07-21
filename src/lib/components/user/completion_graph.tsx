@@ -1,145 +1,140 @@
 import styles from '@/styles/modules/user.module.css';
 
-import dynamic from "next/dynamic";
-const Plot = dynamic(() => import("react-plotly.js").then(m => m.default), { ssr: false, })
-
 import { useEffect, useState } from 'react';
 
 import { UserCompletion } from '@/lib/db/user_score';
-import { PlotData } from 'plotly.js';
-import moment from 'moment';
 
 type CompletionGraphProps = {
 	osu_id: number,
 };
 
-const PlotCategories = ['X', 'SS', 'S', 'A', 'B', 'C', 'D', 'Missing'] as const;
-type PlotCategory = typeof PlotCategories[number];
-type PlotlyDatas = {
-	[grade in PlotCategory]: PlotData;
+const Categories = ['X', 'SS', 'S', 'A', 'B', 'C', 'D'] as const;
+type Category = typeof Categories[number];
+
+type YearBar = {
+	yr: number,
+	total: number,
+	segments: { grade: Category, ratio: number }[],
+	stack: number,
 };
 
-function getGradeMarker(grade: PlotCategory) {
-	const result = {
-		color: getGradeColor(grade),
-		size: 1
-	}
+function buildBars(completion: UserCompletion[]): YearBar[] {
+	return completion.map(c => {
+		const segments = Categories
+			.map(grade => ({
+				grade,
+				ratio: c.total > 0 ? (c[`grades_${grade}`] as number) / c.total : 0,
+			}))
+			.filter(s => s.ratio > 0);
 
-	return result;
+		return {
+			yr: c.yr,
+			total: c.total,
+			segments,
+			stack: segments.reduce((sum, s) => sum + s.ratio, 0),
+		};
+	});
 }
 
-function getGradeColor(grade: PlotCategory): string {
-	if(typeof window === 'undefined') return 'rgba(243,236,255,.12)';
-
-	const token = grade === 'Missing' ? '--grade-missing' : `--grade-${grade.toLowerCase()}`;
-	const value = getComputedStyle(document.documentElement).getPropertyValue(token).trim();
-
-	return value || 'rgba(243,236,255,.12)';
+function formatPct(v: number): string {
+	return `${(v * 100).toFixed(v < 0.01 ? 2 : 1)}%`;
 }
 
 export default function CompletionGraph({ osu_id }: CompletionGraphProps) {
 	const [userCompletion, setUserCompletion] = useState<UserCompletion[] | null>(null);
-	const [data, setData] = useState<PlotData[] | null>(null);
-
-	const yr_begin = 2013;
-	const yr_end = parseInt(moment().format('YYYY'));
-
-	const layout: Partial<Plotly.Layout> = {
-		autosize: true,
-		plot_bgcolor: "rgba(0,0,0,0)",
-		paper_bgcolor: "rgba(0,0,0,0)",
-		font: { family: 'VT323-Regular, monospace' },
-		barmode: 'stack',
-		legend: {
-			font: {
-				color: 'rgba(255,255,255,1)'
-			}
-		},
-		margin: {
-			t: 0,
-			b: 30,
-			l: 60,
-			r: 0
-		},
-		yaxis: {
-			tickcolor: "rgba(0,0,0,0)",
-			gridcolor: "rgba(0,0,0,0)",
-			zerolinecolor: "rgba(0,0,0,0)",
-			// range: [0,100]
-			color: "rgba(255,255,255,1)",
-			tickformat: ".2%"
-		},
-		xaxis: {
-			tickcolor: "rgba(0,0,0,0)",
-			gridcolor: "rgba(0,0,0,0)",
-			zerolinecolor: "rgba(0,0,0,0)",
-			range: ['2013-01-01',moment().format('YYYY')+'-12-31'],
-			color: "rgba(255,255,255,1)",
-			tickvals: Array.from(Array(yr_end - yr_begin + 1).keys()).map(y => y + yr_begin),
-		},
-	};
 
 	useEffect(() => {
-		if(userCompletion !== null) {
-			const data: PlotData[] = [];
-			const datas = {} as PlotlyDatas;
-			
-			PlotCategories.forEach(category => {
-				datas[category] = {
-					x: [],
-					y: [],
-					name: category,
-					type: "bar",
-					marker: getGradeMarker(category),
-				} as never;
-			});
+		if(osu_id <= 0) return;
 
-			PlotCategories.filter(c => c !== 'Missing').forEach(c => {
-				userCompletion.map((current: UserCompletion) => {
-					const k: keyof UserCompletion = 'grades_'+c as keyof UserCompletion;
-					(datas[c].x as number[]).push(current.yr);
-					(datas[c].y as number[]).push(current[k] / current.total);
-				});
-			});
+		fetch(`/api/user/${osu_id}/completion`).then((data: Response) => {
+			if(data.status !== 200) return;
 
-			PlotCategories.forEach(category => {
-				data.push(datas[category]);
-			});
-
-			setData(data);
-		}
-	}, [userCompletion]);
-
-	useEffect(() => {
-		if(osu_id > 0) {
-			fetch(`/api/user/${osu_id}/completion`).then((data: Response) => {
-				if(data.status !== 200) return;
-	
-				data.json().then((completion: UserCompletion[]) => setUserCompletion(completion))
-			});
-		}
+			data.json().then((completion: UserCompletion[]) => setUserCompletion(completion));
+		});
 	}, [osu_id]);
 
-	const has_data = userCompletion !== null && userCompletion.length > 0;
+	if(osu_id <= 0) return null;
+
+	const bars = userCompletion ? buildBars(userCompletion) : [];
+	const peak = bars.reduce((m, b) => Math.max(m, b.stack), 0);
+	const scale = peak > 0 ? peak * 1.12 : 1;
+	const ticks = [0, 0.25, 0.5, 0.75, 1];
+	const legend = Categories.filter(g => bars.some(b => b.segments.some(s => s.grade === g)));
 
 	return (<>
-		{
-			osu_id > 0 &&
-			<div className={styles.completion_graph}>
-				{
-					(has_data && data !== null) ?
-					<Plot
-						data={data}
-						layout={layout}
-						config={{ displayModeBar: false, responsive: true, staticPlot: false }}
-						useResizeHandler={true}
-						style={{ width: '100%', height: '100%' }}
-					/> :
-					<div className={styles.completion_empty}>
-						{ userCompletion === null ? 'Loading completion…' : 'No completion data yet' }
+		<div className={styles.completion_graph}>
+			{
+				(userCompletion !== null && bars.length > 0) ? (<>
+					<div className={styles.completion_head}>
+						<span className={styles.completion_title}>Completion by year</span>
+						<div className={styles.completion_legend}>
+							{
+								legend.map(g =>
+									<span key={g} className={styles.completion_legend_item}>
+										<i style={{ background: `var(--grade-${g.toLowerCase()})` }}/>
+										{g}
+									</span>
+								)
+							}
+						</div>
 					</div>
-				}
-			</div>
-		}
+
+					<div className={styles.completion_plot}>
+						<div className={styles.completion_yaxis}>
+							{
+								ticks.map(t =>
+									<span key={t} className={styles.completion_ytick} style={{ bottom: `${t * 100}%` }}>
+										{formatPct(t * scale)}
+									</span>
+								)
+							}
+						</div>
+
+						<div className={styles.completion_area}>
+							<div className={styles.completion_canvas}>
+								{
+									ticks.map(t =>
+										<div key={t} className={styles.completion_gridline} style={{ bottom: `${t * 100}%` }}/>
+									)
+								}
+								<div className={styles.completion_bars}>
+									{
+										bars.map(b =>
+											<div key={b.yr} className={styles.completion_col}>
+												<div
+													className={styles.completion_stack}
+													style={{ height: `${(b.stack / scale) * 100}%` }}
+													title={`${b.yr} - ${formatPct(b.stack)} of ${b.total} maps`}
+												>
+													{
+														b.segments.map(s =>
+															<div
+																key={s.grade}
+																className={styles.completion_seg}
+																style={{
+																	height: `${(s.ratio / b.stack) * 100}%`,
+																	background: `var(--grade-${s.grade.toLowerCase()})`,
+																}}
+															/>
+														)
+													}
+												</div>
+											</div>
+										)
+									}
+								</div>
+							</div>
+
+							<div className={styles.completion_years}>
+								{ bars.map(b => <span key={b.yr} className={styles.completion_year}>{b.yr}</span>) }
+							</div>
+						</div>
+					</div>
+				</>) :
+				<div className={styles.completion_empty}>
+					{ userCompletion === null ? 'Loading completion…' : 'No completion data yet' }
+				</div>
+			}
+		</div>
 	</>)
 }
