@@ -1,7 +1,7 @@
 // JS rather than JSON so `tsconfigRootDir` can use __dirname.
 // @typescript-eslint resolves parserOptions.project against the process cwd,
 // not this file's location, so linting from the repo root (which has no
-// tsconfig.json — it only contains back/ and web/) failed with
+// tsconfig.json - it only contains back/ and web/) failed with
 // "Cannot read file '/main/osu/blindtest/tsconfig.json'". Anchoring to
 // __dirname makes it resolve to web/tsconfig.json from any cwd.
 module.exports = {

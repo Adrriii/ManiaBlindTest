@@ -132,7 +132,7 @@ export default function CompletionGraph({ osu_id }: CompletionGraphProps) {
 					</div>
 				</>) :
 				<div className={styles.completion_empty}>
-					{ userCompletion === null ? 'Loading completion…' : 'No completion data yet' }
+					{ userCompletion === null ? 'Loading completion...' : 'No completion data yet' }
 				</div>
 			}
 		</div>
