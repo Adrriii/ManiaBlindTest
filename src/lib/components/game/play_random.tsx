@@ -18,11 +18,19 @@ import { ApiError } from 'next/dist/server/api-utils';
 import Welcome from '../welcome';
 import { UserContext } from '@/lib/contexts/user_context';
 
+function volumeIcon(volume: number): string {
+	if(volume === 0) return 'volume_off';
+	if(volume < 0.5) return 'volume_down';
+
+	return 'volume_up';
+}
+
 export default function PlayRandom() {
 	const {userInfo, } = useContext(UserContext);
 	const {gameInfo, setGameInfo} = useContext(GameContext);
 	const gameInfoRef = useRef({gameInfo});
 	const [volume, setVolume] = useState(0.5);
+	const [preMuteVolume, setPreMuteVolume] = useState(0.5);
 	const [isPlaying, setIsPlaying] = useState(false);
 	const isPlayingRef = useRef({isPlaying});
 	const [isPaused, setIsPaused] = useState(false);
@@ -161,6 +169,16 @@ export default function PlayRandom() {
 		getPlayer().volume = volume;
 	}
 
+	function toggleMute() {
+		if(volume > 0) {
+			setPreMuteVolume(volume);
+			handleVolumeChange(0);
+			return;
+		}
+
+		handleVolumeChange(preMuteVolume > 0 ? preMuteVolume : 0.5);
+	}
+
 	useEffect(() => {
 		isPlayingRef.current.isPlaying = isPlaying;
 	}, [isPlaying]);
@@ -234,12 +252,24 @@ export default function PlayRandom() {
 			</div>
 			
 			<div className={styles.volume_controller}>
+				<div className={styles.volume_head}>
+					<span
+						className={`material-symbols-outlined ${styles.volume_icon}`}
+						onClick={toggleMute}
+						title={volume === 0 ? 'Unmute' : 'Mute'}
+					>{volumeIcon(volume)}</span>
+					<span className={styles.volume_label}>Volume</span>
+					<span className={styles.volume_value}>{Math.round(volume * 100)}%</span>
+				</div>
 				<input
+					className={styles.volume_slider}
 					type="range"
 					min={0}
 					max={1}
 					step={0.02}
 					value={volume}
+					aria-label="Sound volume"
+					title="Sound volume"
 					onChange={event => {
 						handleVolumeChange(event.target.valueAsNumber)
 					}}

@@ -32,6 +32,31 @@
 	color: rgb(197, 134, 255);
 }
 
+.score_report {
+	margin-top: var(--sp-1);
+	padding: 2px var(--sp-3);
+	font-size: var(--fs-sm);
+	color: var(--text-mute);
+
+	background: transparent;
+	border: 1px solid var(--border);
+	border-radius: var(--r-full);
+	cursor: pointer;
+	transition: color var(--t-fast), border-color var(--t-fast), background var(--t-fast);
+}
+
+.score_report:hover:not(:disabled) {
+	color: var(--accent);
+	border-color: var(--accent);
+	background: var(--accent-dim);
+}
+
+.score_report:disabled {
+	cursor: default;
+	color: var(--text-mute);
+	border-color: transparent;
+}
+
 .own_score {
 	width: 100%;
 	margin-top: var(--sp-2);
